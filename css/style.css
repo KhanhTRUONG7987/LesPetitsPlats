@@ -1,5 +1,13 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+  
 body {
+    height: 100vh;
     background-color: #EDEDED;
+    margin: 0;
 }
 
 .bgImg {
@@ -60,7 +68,7 @@ body {
     font-family: Manrope;
     position: absolute;
     align-items: center;
-    top: 0.5em;
+    top: 1.5em;
     left: 1em;
 }
 
