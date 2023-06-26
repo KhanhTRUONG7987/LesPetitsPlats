@@ -30,7 +30,6 @@ body {
     height: 25.261px;
     justify-content: center;
     align-items: flex-end;
-    gap: 4.599px;
     flex-shrink: 0;
 }
 
@@ -45,19 +44,19 @@ body {
     text-align: center;
     font-size: 2.2em;
     font-family: Anton;
-    border: 2px solid var(--yellow, #FFD15B);
+    border: 0.1em solid var(--yellow, #FFD15B);
     padding: 0.1em 1.5em 0.1em 1.5em;
 }
 
 .searchBar {
-    width: 954px;
-    height: 72px;
+    width: 60em;
+    height: 4.8em;
     flex-shrink: 0;
     border-radius: 1em;
     background: #FFF;
     z-index: 1000;
     position: absolute;
-    top: calc(50% + 50px);
+    top: calc(50% + 3.5em);
     left: 50%;
     transform: translate(-50%, -50%);
 }
@@ -77,8 +76,8 @@ body {
     justify-content: center;
     align-items: center;
     border-radius: 0.5em;
-    width: 51px;
-    height: 52px;
+    width: 3.5em;
+    height: 3.5em;
     background-color: black;
     flex-shrink: 0;
     position: absolute;
@@ -90,5 +89,132 @@ body {
   
 .iconMagnifyingGlass {
     color: white; 
-    font-size: 24px; 
+    font-size: 2em; 
 }
+
+@media screen and (max-width: 1300px) {
+    .sloganHeading {
+        font-size: 2em;
+        margin-top: -1.8em;
+    }
+
+    .searchBar {
+        width: 50em;
+        height: 4em;
+    }
+    
+    .searchContent {
+        font-size: 0.8em;
+        top: 1.8em;
+        left: 1em;
+    }
+    
+    .iconLoop {
+        border-radius: 0.4em;
+        width: 3em;
+        height: 3em;
+        right: 0.5em;
+    }
+
+    .iconMagnifyingGlass {
+        color: white; 
+        font-size: 1.8em; 
+    }
+
+}
+
+@media screen and (max-width: 1175px) {
+    .sloganHeading {
+        font-size: 1.5em;
+        margin-top: -1.5em;
+    }
+
+    .searchBar {
+        width: 40em;
+        height: 3.5em;
+    }
+    
+    .searchContent {
+        font-size: 0.6em;
+        top: 2.2em;
+        left: 1em;
+    }
+    
+    .iconLoop {
+        border-radius: 0.3em;
+        width: 2.8em;
+        height: 2.8em;
+        right: 0.4em;
+    }
+
+    .iconMagnifyingGlass {
+        color: white; 
+        font-size: 1.6em; 
+    }
+
+}
+  
+@media screen and (max-width: 728px) {
+    .sloganHeading {
+        font-size: 1.2em;
+        margin-top: -1em;
+    }
+
+    .searchBar {
+        width: 30em;
+        height: 2.5em;
+        border-radius: 0.5em;
+    }
+
+    .searchContent {
+        font-size: 0.6em;
+        top: 1.4em;
+        left: 1em;
+    }
+    
+    .iconLoop {
+        border-radius: 0.3em;
+        width: 2em;
+        height: 2em;
+        right: 0.3em;
+    }
+
+    .iconMagnifyingGlass {
+        color: white; 
+        font-size: 1.2em; 
+    }
+} 
+
+@media screen and (max-width: 680px) {
+    .sloganHeading {
+        font-size: 1em;
+        margin-top: -4.5em;
+        padding: 0.2em;
+    }
+
+    .searchBar {
+        width: 25em;
+        height: 1.7em;
+        border-radius: 0.3em;
+        margin-top: -4em;
+    }
+
+    .searchContent {
+        font-size: 0.6em;
+        top: 0.8em;
+        left: 1em;
+    }
+    
+    .iconLoop {
+        border-radius: 0.2em;
+        width: 1.3em;
+        height: 1.3em;
+        right: 0.2em;
+    }
+
+    .iconMagnifyingGlass {
+        color: white; 
+        font-size: 0.8em; 
+    }
+} 
+
