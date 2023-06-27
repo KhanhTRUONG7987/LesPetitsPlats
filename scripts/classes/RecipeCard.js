@@ -55,7 +55,7 @@ export function getRecipeCardDOM(recipe) {
     recipeTime.textContent = `${recipe.time} min`;
     recipeContent.appendChild(recipeTime);
   
-    const descriptionHeading = document.createElement('h2');
+    const descriptionHeading = document.createElement('h3');
     descriptionHeading.textContent = 'RECETTE';
     recipeContent.appendChild(descriptionHeading);
   
@@ -64,8 +64,8 @@ export function getRecipeCardDOM(recipe) {
     description.textContent = recipe.description;
     recipeContent.appendChild(description);
   
-    const ingredientsHeading = document.createElement('h2');
-    ingredientsHeading.textContent = 'Ingrédients';
+    const ingredientsHeading = document.createElement('h3');
+    ingredientsHeading.textContent = 'INGRÉDIENTS';
     recipeContent.appendChild(ingredientsHeading);
   
     const ingredientsList = document.createElement('ul');

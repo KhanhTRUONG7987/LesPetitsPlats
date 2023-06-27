@@ -175,8 +175,8 @@ li {
         font-size: 1.4em; 
     }
 
-    .recipe-card h2 {
-        font-size: 1.1em;
+    .recipe-card h3 {
+        font-size: 0.85em;
     }
 
     .recipe-card p, li {
@@ -216,12 +216,12 @@ li {
         font-size: 1.2em; 
     }
 
-    .recipe-card h2 {
-        font-size: 1em;
+    .recipe-card h3 {
+        font-size: 0.75em;
     }
 
     .recipe-card p, li {
-        font-size: 0.8em;
+        font-size: 0.7em;
     }
 } 
 
@@ -269,7 +269,7 @@ li {
 .recipe-card {
     width: calc(33.33% - 5em);
     margin: 4em 0 0 4em;
-    height: 35em;
+    height: 30em;
     object-fit: cover;
     flex-shrink: 0;
     border-radius: 2em;
@@ -280,7 +280,7 @@ li {
 
 .recipe-card-image {
     width: 100%;
-    height: calc(35em / 3); 
+    height: calc(30em / 3); 
     object-fit: cover;
     border-top-left-radius: 1em;
     border-top-right-radius: 1em;
@@ -309,6 +309,11 @@ li {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.recipe-card h3 {
+    font-size: 0.9em;
+    color: grey;
 }
 
 .recipe-card-content p.recipe-time {
