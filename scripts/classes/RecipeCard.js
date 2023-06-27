@@ -1,28 +1,3 @@
-// Define the RecipeCard class
-// export class RecipeCard {
-//     constructor() {
-//       this.recipes = [];
-//     }
-  
-//     // Method to add a recipe to the factory
-//     addRecipe(recipe) {
-//       this.recipes.push(recipe);
-//     }
-  
-//     // Method to retrieve all recipes
-//     getAllRecipes() {
-//       return this.recipes;
-//     }
-  
-//     // Method to retrieve a recipe by its ID
-//     getRecipeById(id) {
-//       return this.recipes.find(recipe => recipe.id === id);
-//     }
-// }
-
-// // Export an instance of RecipeCard class
-// export default new RecipeCard();
-
 // Function to generate the recipe card DOM
 export function getRecipeCardDOM(recipe) {
     const recipeCard = document.createElement('div');
@@ -80,3 +55,4 @@ export function getRecipeCardDOM(recipe) {
     recipeCard.appendChild(recipeContentWrapper); 
     return recipeCard;
 }
+// ################################################################# 
