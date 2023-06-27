@@ -175,6 +175,14 @@ li {
         font-size: 1.4em; 
     }
 
+    .recipe-card h2 {
+        font-size: 1.1em;
+    }
+
+    .recipe-card p, li {
+        font-size: 0.8em;
+    }
+
 }
   
 @media screen and (max-width: 728px) {
@@ -206,6 +214,14 @@ li {
     .iconMagnifyingGlass {
         color: white; 
         font-size: 1.2em; 
+    }
+
+    .recipe-card h2 {
+        font-size: 1em;
+    }
+
+    .recipe-card p, li {
+        font-size: 0.8em;
     }
 } 
 
@@ -282,7 +298,7 @@ li {
 }
 
 .recipe-card-content {
-    padding: 2.2em;
+    padding: 1em 2.2em 1em 2.2em;
     display: flex;
     flex-direction: column;
     gap: 0.5em
