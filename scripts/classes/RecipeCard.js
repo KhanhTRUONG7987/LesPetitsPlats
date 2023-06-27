@@ -51,7 +51,8 @@ export function getRecipeCardDOM(recipe) {
     recipeContent.appendChild(title);
   
     const recipeTime = document.createElement('p');
-    recipeTime.textContent = `Time: ${recipe.time} minutes`;
+    recipeTime.classList.add('recipe-time');
+    recipeTime.textContent = `${recipe.time} min`;
     recipeContent.appendChild(recipeTime);
   
     const descriptionHeading = document.createElement('h2');
