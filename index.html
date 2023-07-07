@@ -19,7 +19,8 @@
             </a>
             <div class="search">
                 <h1 class="sloganHeading">CHERCHEZ PARMI PLUS DE 1500 RECETTES DU QUOTIDIEN,SIMPLES ET DÉLICIEUSES</h1>
-                <div class="searchBar">
+                <div class="searchTool">
+                    <input class="searchBar">
                     <p class="searchContent">Rechercher une recette, un ingrédient, ...</p>
                     <div class="iconLoop">
                         <i class="fas fa-search iconMagnifyingGlass"></i>
@@ -31,6 +32,25 @@
 
     <!-- Main content section -->
     <main>
+        <div class="advancedSearch">
+            <div class="searchFields">
+                <div class="searchField">
+                    <label for="ingredientsSearch">Ingrédients:</label>
+                    <input id="ingredientsSearch" class="searchBar" type="text">
+                </div>
+                <div class="searchField">
+                    <label for="utensilsSearch">Ustensiles:</label>
+                    <input id="utensilsSearch" class="searchBar" type="text">
+                </div>
+                <div class="searchField">
+                    <label for="appliancesSearch">Appareils:</label>
+                    <input id="appliancesSearch" class="searchBar" type="text">
+                </div>
+            </div>
+            <div class="searchCount">
+                <p id="resultCount"></p>
+            </div>
+        </div>
         
     </main>
 

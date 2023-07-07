@@ -60,7 +60,7 @@ li {
 .sloganHeading {
     z-index: 1000;
     position: absolute;
-    top: 50%;
+    top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
     margin-top: -2em;
@@ -70,17 +70,28 @@ li {
     font-family: Anton;
 }
 
-.searchBar {
-    width: 60em;
-    height: 3.5em;
-    flex-shrink: 0;
-    border-radius: 1em;
-    background: #FFF;
-    z-index: 1000;
+.searchTool {
     position: absolute;
-    top: calc(50% + 3.5em);
+    top: 58%;
     left: 50%;
     transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+}  
+
+.searchBar {
+    display: flex;
+    align-items: center;
+    width: 60em;
+    height: 3.5em;
+    border-radius: 1em;
+    background: #FFF;
+    padding-left: 1em;
+    padding-right: 4em;
+    font-size: 1em;
+    position: relative;
 }
 
 .searchContent {
@@ -88,12 +99,16 @@ li {
     font-size: 1em;
     font-family: Manrope;
     position: absolute;
-    align-items: center;
-    top: 1em;
+    top: 50%;
     left: 1em;
+    transform: translateY(-50%);
 }
 
 .iconLoop {
+    position: absolute;
+    top: 50%;
+    right: 0.35em;
+    transform: translateY(-50%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -101,24 +116,48 @@ li {
     width: 2.8em;
     height: 2.8em;
     background-color: black;
-    flex-shrink: 0;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: 0.38em;
 }
   
 .iconMagnifyingGlass {
-    color: white; 
-    font-size: 1.8em; 
+    color: white;
+    font-size: 1.8em;
+}
+/* ################################################################# */
+.advancedSearch {
+    margin-bottom: 1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2em;
 }
 
+.searchFields {
+    display: flex;
+    justify-content: flex-start;
+    gap: 3em;
+    flex-wrap: wrap;
+}
+
+.searchField {
+    flex: 0 0 8em;
+    height: 2em;
+}
+
+
+.searchCount {
+    text-align: right;
+}
 /* ################################################################ */
 
 @media screen and (max-width: 1300px) {
     .sloganHeading {
         font-size: 2em;
         margin-top: -1.8em;
+    }
+
+    .searchTool {
+        position: absolute;
+        top: 55%;
     }
 
     .searchBar {
@@ -128,7 +167,7 @@ li {
     
     .searchContent {
         font-size: 0.8em;
-        top: 1.35em;
+        top: 2em;
         left: 1em;
     }
     
@@ -150,6 +189,12 @@ li {
     .sloganHeading {
         font-size: 1.5em;
         margin-top: -1.5em;
+        top: 38%;
+    }
+
+    .searchTool {
+        position: absolute;
+        top: 48%;
     }
 
     .searchBar {
@@ -159,7 +204,7 @@ li {
     
     .searchContent {
         font-size: 0.8em;
-        top: 1.15em;
+        top: 1.7em;
         left: 1em;
     }
     
@@ -185,10 +230,16 @@ li {
 
 }
   
-@media screen and (max-width: 728px) {
+@media screen and (max-width: 728px) {  
     .sloganHeading {
         font-size: 1.2em;
         margin-top: -2.5em;
+        top: 40%;
+    }
+
+    .searchTool {
+        position: absolute;
+        top: 45%;
     }
 
     .searchBar {
@@ -200,15 +251,16 @@ li {
 
     .searchContent {
         font-size: 0.6em;
-        top: 1.4em;
+        top: -1.25em;
         left: 1em;
     }
     
     .iconLoop {
         border-radius: 0.3em;
-        width: 2em;
-        height: 2em;
-        right: 0.26em;
+        width: 1.5em;
+        height: 1.5em;
+        right: 0.35em;
+        top: -0.76em;
     }
 
     .iconMagnifyingGlass {
@@ -235,12 +287,12 @@ li {
         width: 25em;
         height: 1.7em;
         border-radius: 0.3em;
-        margin-top: -5em;
+        margin-top: -7.5em;
     }
 
     .searchContent {
         font-size: 0.6em;
-        top: 0.8em;
+        top: -6.2em;
         left: 1em;
     }
     
@@ -248,7 +300,8 @@ li {
         border-radius: 0.2em;
         width: 1.3em;
         height: 1.3em;
-        right: 0.19em;
+        right: 0.2em;
+        top: -3.75em;
     }
 
     .iconMagnifyingGlass {
