@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="assets/logo/logo.png" />
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
     <title>Les petits plats</title>
@@ -22,9 +23,10 @@
                 <div class="searchTool">
                     <input class="searchBar">
                     <p class="searchContent">Rechercher une recette, un ingrédient, ...</p>
-                    <div class="iconLoop">
+                    <span class="iconClear">X</span>
+                    <span class="iconLoop">
                         <i class="fas fa-search iconMagnifyingGlass"></i>
-                    </div>
+                    </span>
                 </div>
             </div>
         </div>
@@ -32,30 +34,57 @@
 
     <!-- Main content section -->
     <main>
-        <div class="advancedSearch">
-            <div class="searchFields">
-                <div class="searchField">
-                    <label for="ingredientsSearch">Ingrédients:</label>
-                    <input id="ingredientsSearch" class="searchBar" type="text">
+        <div class="advancedSearchContainer">
+            <div class="advancedSearchRow row">
+                <!-- Left column with filters -->
+                <div class="filtersGroup col-md-8">
+                    <div class="searchFields row">
+                        <div class="searchField col-md-2">
+                            <select id="ingredientsSearch" class="advancedSearchDropdown">
+                                <option value="">Ingrédients</option>
+                            </select>
+                            <div class="advancedSearchBar">
+                                <input type="text"">
+                                <i class="fas fa-search iconMagnifyingGlass"></i>
+                                <div class="ingredientTagsContainer tagsContainer"></div>
+                            </div>
+                        </div>
+                        <div class="searchField col-md-2">
+                            <select id="utensilsSearch" class="advancedSearchDropdown">
+                                <option value="">Appareils</option>
+                            </select>
+                            <div class="advancedSearchBar">
+                                <input type="text"">
+                                <i class="fas fa-search iconMagnifyingGlass"></i>
+                                <div class="appareilTagsContainer tagsContainer"></div>
+                            </div>
+                        </div>
+                        <div class="searchField col-md-2">
+                            <select id="appliancesSearch" class="advancedSearchDropdown">
+                                <option value="">Ustensiles</option>
+                            </select>
+                            <div class="advancedSearchBar">
+                                <input type="text"">
+                                <i class="fas fa-search iconMagnifyingGlass"></i>
+                                <div class="ustensileTagsContainer tagsContainer"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="searchField">
-                    <label for="utensilsSearch">Ustensiles:</label>
-                    <input id="utensilsSearch" class="searchBar" type="text">
+                <!-- Right column with count of recipes listed -->
+                <div class="listedRecipesCount col-md-4">
+                    <p id="resultCount">1500 recettes</p>
                 </div>
-                <div class="searchField">
-                    <label for="appliancesSearch">Appareils:</label>
-                    <input id="appliancesSearch" class="searchBar" type="text">
-                </div>
-            </div>
-            <div class="searchCount">
-                <p id="resultCount"></p>
             </div>
         </div>
-        
     </main>
+          
 
     <!-- Scripts for functionality -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script type="module" src="scripts/pages/recipeCard.js"></script>
-    
+
 </body>
 </html>

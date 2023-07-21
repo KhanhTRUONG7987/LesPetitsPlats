@@ -45,7 +45,6 @@ li {
     position: absolute;
     top: 3em;
     left: 3em;
-    display: flex;
     width: 207px;
     height: 25.261px;
     justify-content: center;
@@ -104,6 +103,10 @@ li {
     transform: translateY(-50%);
 }
 
+.iconClear {
+    display: none;
+}
+
 .iconLoop {
     position: absolute;
     top: 50%;
@@ -122,8 +125,17 @@ li {
     color: white;
     font-size: 1.8em;
 }
+
+.recipe-card-content h2 {
+    font-size: 1.2em;
+    font-family: Anton;
+    margin-bottom: 1.2em;
+}
 /* ################################################################# */
-.advancedSearch {
+.advancedSearchRow {
+    margin: 2em;
+}
+.filtersGroup {
     margin-bottom: 1em;
     display: flex;
     justify-content: space-between;
@@ -131,21 +143,37 @@ li {
     padding: 0 2em;
 }
 
-.searchFields {
+.filtersGroup .searchFields {
     display: flex;
     justify-content: flex-start;
-    gap: 3em;
-    flex-wrap: wrap;
+    gap: 1em;
+    flex-wrap: nowrap;
 }
 
-.searchField {
-    flex: 0 0 8em;
-    height: 2em;
+.filtersGroup .searchField {
+    flex: 0 0 33.33%;
+    max-width: 33.33%;
+    padding-left: 1em;
 }
 
-
-.searchCount {
+.listedRecipesCount {
     text-align: right;
+    text-justify: center;
+    align-self: center;
+}
+
+.advancedSearchDropdown {
+    display: flex;
+    align-items: center;
+    width: 10em;
+    height: 3.5em;
+    border-radius: 1em;
+    background: #FFF;
+    padding-left: 1em;
+    padding-right: 2em;
+    font-size: 1em;
+    position: relative;
+    border-color: white;
 }
 /* ################################################################ */
 
