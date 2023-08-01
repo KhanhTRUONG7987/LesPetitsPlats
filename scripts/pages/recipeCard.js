@@ -1,11 +1,101 @@
 import { getRecipeCardDOM } from "../classes/RecipeCard.js";
-import recipes from '../../data/recipes.js';
+import { Recipes } from "../classes/Recipes.js";
+import recipes from "../../data/recipes.js";
 
 const recipeCardContainer = document.createElement("div");
 recipeCardContainer.className = "recipeCardContainer";
 
+const recipesInstance = new Recipes(recipes);
+
+const searchBar = document.querySelector(".searchBar");
+searchBar.addEventListener("input", (event) => {
+  const searchValue = event.target.value;
+  recipesInstance.onInputChange(searchValue);
+});
+
+document.querySelectorAll(".tag").forEach((tag) => {
+  tag.addEventListener("click", (e) => {
+    const category = e.target.dataset.category;
+    const value = e.target.dataset.value;
+    recipesInstance.addTag(category, value);
+  });
+});
+
+// Call the initial display of all recipes
+recipesInstance.displayRecipesDOM(recipes.map((recipe) => recipe.id));
+
+// Append the recipe card container to the main content
+const mainContent = document.querySelector("main");
+mainContent.appendChild(recipeCardContainer);
+
 async function displayRecipeCards() {
   try {
+    // Function to handle dropdown toggling
+    function toggleDropdown(dropdown) {
+      dropdown.classList.toggle("open");
+      // Toggle the visibility of dropdownHeaderOpened
+      const headerOpened = dropdown.querySelector(".dropdownHeaderOpened");
+      headerOpened.style.visibility =
+        headerOpened.style.visibility === "hidden" ? "visible" : "hidden";
+    }
+
+    // Function to handle toggling when clicking on the .fa-angle-up and .fa-chevron-down icons
+    function toggleDropdownFromIcon(icon) {
+      const dropdown = icon.closest(".customDropdown");
+      toggleDropdown(dropdown);
+    }
+
+    // Add event listeners to toggle the dropdown when the icon down is clicked
+    const angleDownIcons = document.querySelectorAll(
+      ".customDropdown .fa-chevron-down"
+    );
+
+    angleDownIcons.forEach((icon) => {
+      icon.addEventListener("click", () => {
+        toggleDropdownFromIcon(icon);
+      });
+    });
+
+    // Close dropdown when clicking on the icon up
+    const angleUpIcons = document.querySelectorAll(
+      ".customDropdown .fa-angle-up"
+    );
+
+    angleUpIcons.forEach((icon) => {
+      icon.addEventListener("click", () => {
+        const dropdown = icon.closest(".customDropdown");
+        dropdown.classList.remove("open");
+        // Hide dropdownHeaderOpened when clicking on the icon up
+        const headerOpened = dropdown.querySelector(".dropdownHeaderOpened");
+        headerOpened.style.visibility = "hidden";
+      });
+    });
+
+    const dropdownHeaders = document.querySelectorAll(
+      ".customDropdown .dropdownHeader"
+    );
+    // Close dropdown when clicking outside of it
+    window.addEventListener("click", (event) => {
+      dropdownHeaders.forEach((header) => {
+        const dropdown = header.parentElement;
+        if (!dropdown.contains(event.target)) {
+          dropdown.classList.remove("open");
+          // Hide dropdownHeaderOpened when clicking outside
+          const headerOpened = dropdown.querySelector(".dropdownHeaderOpened");
+          headerOpened.style.visibility = "hidden";
+        }
+      });
+    });
+
+    // Function to display the selected keywords as tags below the main search
+    function displaySelectedTags() {}
+
+    // Call the function to display the selected tags initially
+    recipesInstance.displaySelectedTags();
+
+    // Call the function to display the selected tags initially
+    displaySelectedTags();
+
     // Initially display all recipes
     const allRecipes = recipes;
 
@@ -52,17 +142,17 @@ async function displayRecipeCards() {
       searchBar.focus();
     });
 
-    const iconLoop = document.querySelector('.iconLoop');
+    const iconLoop = document.querySelector(".iconLoop");
 
-    iconLoop.addEventListener('click', () => {
+    iconLoop.addEventListener("click", () => {
       searchBar.focus();
-      iconClear.style.display = 'inline-block';
+      iconClear.style.display = "inline-block";
       hidePlaceholder();
     });
 
-    iconClear.addEventListener('click', () => {
-      searchBar.value = '';
-      iconClear.style.display = 'none';
+    iconClear.addEventListener("click", () => {
+      searchBar.value = "";
+      iconClear.style.display = "none";
       hidePlaceholder();
     });
 
@@ -96,30 +186,30 @@ async function displayRecipeCards() {
       hidePlaceholder(); // Hide the search content immediately
     });
 
-
-
     // Add an event listener to the search bar to trigger the search on input change
     searchBar.addEventListener("input", handleSearch);
 
     // Function to perform the search and filter matching recipes
     function searchRecipes(query) {
-      return allRecipes.filter(recipe => {
+      return allRecipes.filter((recipe) => {
         const title = recipe.name.toLowerCase();
-        const ingredients = recipe.ingredients.map(ing => ing.ingredient.toLowerCase());
+        const ingredients = recipe.ingredients.map((ing) =>
+          ing.ingredient.toLowerCase()
+        );
         const description = recipe.description.toLowerCase();
 
         return (
           title.includes(query) ||
-          ingredients.some(ing => ing.includes(query)) ||
+          ingredients.some((ing) => ing.includes(query)) ||
           description.includes(query)
         );
       });
     }
-    
+
     // Create a function to update the displayed recipes based on the search results
     function updateDisplayedRecipes(matchingRecipes) {
       recipeCardContainer.innerHTML = ""; // Clear previous search results
-      matchingRecipes.forEach(recipe => {
+      matchingRecipes.forEach((recipe) => {
         const recipeCardDOM = getRecipeCardDOM(recipe);
         recipeCardContainer.appendChild(recipeCardDOM);
       });
