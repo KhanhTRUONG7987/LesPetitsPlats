@@ -28,7 +28,7 @@ recipesInstance.displayRecipesDOM(recipes.map((recipe) => recipe.id));
 const mainContent = document.querySelector("main");
 mainContent.appendChild(recipeCardContainer);
 
-async function displayRecipeCards() {
+export async function displayRecipeCards() {
   try {
     // Function to handle dropdown toggling
     function toggleDropdown(dropdown) {
@@ -86,12 +86,14 @@ async function displayRecipeCards() {
         }
       });
     });
-
-    // Function to display the selected keywords as tags below the main search
-    function displaySelectedTags() {}
-
+    
     // Call the function to display the selected tags initially
     recipesInstance.displaySelectedTags();
+
+    // Function to display the selected keywords as tags below the main search
+    function displaySelectedTags() {
+      recipesInstance.displaySelectedTags();
+    }
 
     // Call the function to display the selected tags initially
     displaySelectedTags();
@@ -100,7 +102,6 @@ async function displayRecipeCards() {
     const allRecipes = recipes;
 
     // Add event listeners and functions for the X button
-    const searchBar = document.querySelector(".searchBar");
     const iconClear = document.querySelector(".iconClear");
     const searchIcon = document.querySelector(".iconMagnifyingGlass");
     let searchQuery = "";
@@ -224,6 +225,10 @@ async function displayRecipeCards() {
     // Append the recipe card container to the main content
     const mainContent = document.querySelector("main");
     mainContent.appendChild(recipeCardContainer);
+
+    // Call the updateAdvancedSearchFields method
+    recipesInstance.updateAdvancedSearchFields();
+    
   } catch (error) {
     console.error("Failed to load data of recipes: ", error);
   }

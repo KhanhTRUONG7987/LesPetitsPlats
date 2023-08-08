@@ -62,8 +62,9 @@
           <!-- Left column with filters -->
           <div class="filtersGroup col-md-12">
             <div class="searchFields row">
+
               <div class="searchField col-md-4">
-                <div class="customDropdown">
+                <div class="customDropdown" data-category="ingredients">
                   <div class="dropdownHeader">
                     Ingrédients<i class="fa-solid fa-chevron-down"></i>
                   </div>
@@ -89,8 +90,9 @@
                   </div>
                 </div>
               </div>
+
               <div class="searchField col-md-4">
-                <div class="customDropdown">
+                <div class="customDropdown" data-category="appliance">
                   <div class="dropdownHeader">
                     Appareils<i class="fa-solid fa-chevron-down"></i>
                   </div>
@@ -102,14 +104,23 @@
                       <span class="iconLoopDropdown">
                         <i class="fa-solid fa-magnifying-glass"></i>
                       </span>
-                      <div class="ingredientTagsContainer tagsContainer"></div>
+                      <div class="applianceTagsContainer tagsContainer">
+                        <ul class="dropdownContent">
+                          <li
+                            class="tag"
+                            data-category="appliance"
+                            data-value=""
+                          ></li>
+                        </ul>
+                      </div>
                       <div class="dropdownOptions"></div>
                     </div>
                   </div>
                 </div>
               </div>
+
               <div class="searchField col-md-4">
-                <div class="customDropdown">
+                <div class="customDropdown" data-category="ustensiles">
                   <div class="dropdownHeader">
                     Ustensiles<i class="fa-solid fa-chevron-down"></i>
                   </div>
@@ -121,12 +132,21 @@
                       <span class="iconLoopDropdown">
                         <i class="fa-solid fa-magnifying-glass"></i>
                       </span>
-                      <div class="ingredientTagsContainer tagsContainer"></div>
+                      <div class="utensileTagsContainer tagsContainer">
+                        <ul class="dropdownContent">
+                          <li
+                            class="tag"
+                            data-category="ustensiles"
+                            data-value=""
+                          ></li>
+                        </ul>
+                      </div>
                       <div class="dropdownOptions"></div>
                     </div>
                   </div>
                 </div>
               </div>
+
             </div>
             <!-- Right column with count of recipes listed -->
             <div class="listedRecipesCount col-md-4">
@@ -143,5 +163,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script type="module" src="scripts/pages/recipeCard.js"></script>
+    <script type="module" src="scripts/classes/Recipes.js"></script>
   </body>
 </html>

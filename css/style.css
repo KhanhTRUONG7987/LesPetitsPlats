@@ -263,6 +263,7 @@ header {
   overflow-y: auto;
   border-radius: 1em;
   background: #fff;
+  padding: 1em;
 }
 
 .option {
