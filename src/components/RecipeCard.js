@@ -1,16 +1,16 @@
-import recipes from "../../src/data/recipes.js";
+import recipes from "../data/recipes.js";
 import {
   displaySelectedTags,
   searchRecipes,
   updateDisplayedRecipes,
-} from "../utils/helpers";
+} from "../utils/helpers.js";
 
 import {
   handleSearch,
   clearSearch,
   showPlaceholder,
   hidePlaceholder,
-} from "../utils/search";
+} from "../utils/search.js";
 
 import Recipes from "../services/RecipesService.js";
 
@@ -159,12 +159,12 @@ class RecipeCard extends Recipes {
         recipeCard.classList.add("recipe-card");
 
         const imageLink = document.createElement("a");
-        imageLink.href = `assets/images/${recipe.image}`;
+        imageLink.href = `public/images/${recipe.image}`;
         imageLink.target = "_blank";
 
         const recipeImage = document.createElement("img");
         recipeImage.className = "recipe-card-image";
-        recipeImage.src = `assets/images/${recipe.image}`;
+        recipeImage.src = `public/images/${recipe.image}`;
         recipeImage.alt = recipe.name;
 
         imageLink.appendChild(recipeImage);
@@ -300,7 +300,6 @@ class RecipeCard extends Recipes {
 
     return filteredRecipes.map((recipe) => recipe.id);
   }
-  render() {}
 }
 
 export default RecipeCard;

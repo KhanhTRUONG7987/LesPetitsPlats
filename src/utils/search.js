@@ -1,5 +1,3 @@
-import Recipes from "../services/RecipesService.js";
-
 // Function to handle the search
 function handleSearch(
   searchBar,

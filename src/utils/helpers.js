@@ -1,5 +1,3 @@
-import Recipes from "../services/RecipesService.js";
-
 // Function to display the selected keywords as tags below the main search
 function displaySelectedTags() {
   recipesInstance.displaySelectedTags();

@@ -66,7 +66,6 @@ class Recipes {
     });
   }
 
-  // ****************************************************************
   // Method to hide the tags
   hideTags() {
     const tagsContainer = document.querySelector(".selectedTagsContainer");

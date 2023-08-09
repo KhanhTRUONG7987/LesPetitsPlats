@@ -1,19 +1,22 @@
+import RecipeCard from "./components/RecipeCard.js";
+import recipes from "./data/recipes.js";
+
 document.addEventListener("DOMContentLoaded", () => {
-  const recipesInstance = new Recipes(recipes);
-  recipesInstance.initSearchBar();
+  const recipeCardInstance = new RecipeCard(recipes);
+  recipeCardInstance.initSearchBar();
 
   const dropdownHeaders = document.querySelectorAll(".dropdownHeader");
   if (dropdownHeaders) {
     dropdownHeaders.forEach((header) => {
       header.addEventListener("click", () => {
         const customDropdown = header.closest(".customDropdown");
-        recipesInstance.toggleDropdownOptions(customDropdown);
+        recipeCardInstance.toggleDropdownOptions(customDropdown);
       });
     });
   }
 
   // Call the function to display and filter recipe cards
-  recipesInstance.displayRecipesDOM(
-    recipesInstance.recipes.map((recipe) => recipe.id)
+  recipeCardInstance.displayRecipesDOM(
+    recipeCardInstance.recipes.map((recipe) => recipe.id)
   );
 });
