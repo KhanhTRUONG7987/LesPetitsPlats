@@ -1,7 +1,5 @@
-// Function to display the selected keywords as tags below the main search
-function displaySelectedTags() {
-  recipesInstance.displaySelectedTags();
-}
+import recipes from "../data/recipes.js"
+import Recipes from "../models/recipes.js";
 
 // Function to perform the search and filter matching recipes
 function searchRecipes(query, allRecipes) {
@@ -36,5 +34,4 @@ function updateDisplayedRecipes(
   resultCount.textContent = `${matchingRecipes.length} recettes`;
 }
 
-// Export the helper functions
-export { displaySelectedTags, searchRecipes, updateDisplayedRecipes };
+export { searchRecipes, updateDisplayedRecipes };
