@@ -1,130 +1,40 @@
-import { searchRecipes, updateDisplayedRecipes } from "../utils/helpers.js";
 import recipes from "../data/recipes.js";
-import Recipes from "./recipes.js";
 
-export default class Cards {
-  constructor() {}
+class Cards {
+  constructor() {
+    this.recipes = recipes;
+    this.init();
+  }
 
-  // Function to display the recipe cards
-  displayRecipesDOM(result) {
-    const allRecipeCards = document.querySelectorAll(".recipe");
-    allRecipeCards.forEach((card) => card.classList.add("hidden"));
-
-    result.forEach((recipeId) => {
-      const visibleRecipeCard = document.getElementById(recipeId);
-      if (visibleRecipeCard) {
-        visibleRecipeCard.classList.remove("hidden");
-      }
+  init() {
+    document.addEventListener("DOMContentLoaded", () => {
+      this.displayRecipeCards();
     });
   }
 
-  // Function to render the recipe cards
+  // Display recipe cards 
   displayRecipeCards() {
-    const recipeCardContainer = document.createElement("div");
-    recipeCardContainer.className = "recipeCardContainer";
+    const recipeCardContainer = document.getElementById("recipeCardContainer");
+    recipeCardContainer.innerHTML = "";
 
-    const recipesInstance = new Recipes(recipes);
-
-    const searchBar = document.querySelector(".searchBar");
-    searchBar.addEventListener("input", (event) => {
-      const searchValue = event.target.value;
-      recipesInstance.onInputChange(searchValue);
-    });
-
-    document.querySelectorAll(".tag").forEach((tag) => {
-      tag.addEventListener("click", (e) => {
-        const category = e.target.dataset.category;
-        const value = e.target.dataset.value;
-        recipesInstance.addTag(category, value);
-      });
-    });
-
-    // Call the initial display of all recipes
-    recipesInstance.displayRecipesDOM(recipes.map((recipe) => recipe.id));
-
-    // Append the recipe card container to the main content
-    const mainContent = document.querySelector("main");
-    mainContent.appendChild(recipeCardContainer);
-
-    try {
-      // Call the function to display the selected tags initially
-      this.displaySelectedTags();
-
-      // Initially display all recipes
-      const allRecipes = recipes;
-      this.updateDisplayedRecipes(allRecipes);
-    } catch (error) {
-      console.error("Failed to load data of recipes: ", error);
-    }
-
-    // Add event listeners and functions for the X button
-    const iconClear = document.querySelector(".iconClear");
-    const searchIcon = document.querySelector(".iconMagnifyingGlass");
-    let searchQuery = "";
-
-    // Remove the event listener for the search icon
-    searchIcon.removeEventListener("click", handleSearch);
-
-    searchBar.addEventListener("input", () => {
-      handleSearch(
-        searchBar,
-        searchIcon,
-        searchRecipes,
-        updateDisplayedRecipes,
-        allRecipes,
-        iconClear,
-        hidePlaceholder.bind(null, searchContent)
-      );
-    });
-
-    iconClear.addEventListener("click", () => {
-      clearSearch(searchBar, handleSearch, searchBar.focus.bind(searchBar));
-    });
-
-    searchIcon.addEventListener("click", () => {
-      const searchContent = document.querySelector(".searchContent");
-      searchContent.style.display = "block";
-      searchBar.focus();
-      showPlaceholder(searchContent);
-    });
-
-    const iconLoop = document.querySelector(".iconLoop");
-
-    iconLoop.addEventListener("click", () => {
-      searchBar.focus();
-      iconClear.style.display = "inline-block";
-      hidePlaceholder();
-    });
-
-    iconClear.addEventListener("click", () => {
-      searchBar.value = "";
-      iconClear.style.display = "none";
-      hidePlaceholder();
-    });
-
-    // Add an event listener to the search bar to show/hide the placeholder on focus/blur
-    searchBar.addEventListener("focus", hidePlaceholder);
-    searchBar.addEventListener("blur", showPlaceholder);
-
-    // Add an event listener to the search icon to clear the search content, focus the search bar, and hide the search content
-    searchIcon.addEventListener("mousedown", (event) => {
-      event.preventDefault(); // prevents focus from triggering before hiding the search content
-      searchBar.focus(); // Focus the search bar
-      hidePlaceholder(); // Hide the search content immediately
+    this.recipes.forEach((recipeId) => {
+      const recipeCard = this.createCard(recipeId);
+      recipeCardContainer.appendChild(recipeCard);
     });
   }
 
-  static getRecipeCardDOM(recipe) {
+  // Create a recipe card
+  createCard(recipe) {
     const recipeCard = document.createElement("div");
     recipeCard.classList.add("recipe-card");
 
     const imageLink = document.createElement("a");
-    imageLink.href = `public/images/${recipe.image}`;
+    imageLink.href = `assets/images/${recipe.image}`;
     imageLink.target = "_blank";
 
     const recipeImage = document.createElement("img");
     recipeImage.className = "recipe-card-image";
-    recipeImage.src = `public/images/${recipe.image}`;
+    recipeImage.src = `assets/images/${recipe.image}`;
     recipeImage.alt = recipe.name;
 
     imageLink.appendChild(recipeImage);
@@ -159,11 +69,51 @@ export default class Cards {
     recipeContent.appendChild(ingredientsHeading);
 
     const ingredientsList = document.createElement("ul");
+    ingredientsList.classList.add("ingredients-list");
+
     recipe.ingredients.forEach((ingredient) => {
       const listItem = document.createElement("li");
-      listItem.textContent = `${ingredient.quantity || ""} ${
-        ingredient.unit || ""
-      } ${ingredient.ingredient}`;
+      listItem.classList.add("col-md-6");
+
+      if (ingredient.unit) {
+        switch (ingredient.unit) {
+          case "grammes":
+            listItem.innerHTML = `<span class="ingredient-name">${
+              ingredient.ingredient || ""
+            }</span>
+            ${ingredient.quantity}g`;
+            break;
+          case "ml":
+            listItem.innerHTML = `<span class="ingredient-name">${
+              ingredient.ingredient || ""
+            }</span>
+            ${ingredient.quantity}ml`;
+            break;
+          case "cl":
+            listItem.innerHTML = `<span class="ingredient-name">${
+              ingredient.ingredient || ""
+            }</span>
+              ${ingredient.quantity}cl`;
+            break;
+          case "Litres":
+          case "litres":
+            listItem.innerHTML = `<span class="ingredient-name">${
+              ingredient.ingredient || ""
+            }</span>
+              ${ingredient.quantity}l`;
+            break;
+          default:
+            listItem.innerHTML = `<span class="ingredient-name">${
+              ingredient.ingredient || ""
+            }</span>
+            ${ingredient.quantity || ""} ${ingredient.unit}`;
+        }
+      } else {
+        listItem.innerHTML = `<span class="ingredient-name">${
+          ingredient.ingredient || ""
+        }</span>
+        ${ingredient.quantity || ""}`;
+      }
       ingredientsList.appendChild(listItem);
     });
     recipeContent.appendChild(ingredientsList);
@@ -173,3 +123,5 @@ export default class Cards {
     return recipeCard;
   }
 }
+
+export default Cards;

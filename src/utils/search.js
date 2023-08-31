@@ -1,43 +1,78 @@
-// Function to handle the search
-function handleSearch(
-  searchBar,
-  searchIcon,
-  searchRecipes,
-  updateDisplayedRecipes,
-  allRecipes,
-  iconClear,
-  hidePlaceholder
-) {
-  let searchQuery = searchBar.value.toLowerCase().trim();
-  if (searchQuery.length >= 3) {
-    const matchingRecipes = searchRecipes(searchQuery, allRecipes);
-    updateDisplayedRecipes(matchingRecipes);
-    iconClear.style.display = "block"; // Show the X button when there is search content
+import recipes from "../data/recipes.js";
+import AdvancedSearch from "../models/tags.js";
+import Cards from "../models/cards.js";
+import { updateListedRecipesCount } from "./countListedCards.js";
+
+// Function to perform search and update interface
+export function performSearch(searchQuery, recipeCardContainer) {
+  // Clear previous search results
+  clearSearchResults();
+
+  if (searchQuery.length < 3) {
+    // Display all recipe cards
+    displayAllRecipeCards();
+    return;
+  }
+
+  // Filter recipes based on search query
+  const matchingRecipes = filterRecipes(searchQuery);
+
+  // Update the interface with search results
+  updateInterface(matchingRecipes, searchQuery);
+
+  updateListedRecipesCount(recipeCardContainer);
+}
+
+// Function to clear search results
+function clearSearchResults() {
+  const recipeCardContainer = document.getElementById("recipeCardContainer");
+  recipeCardContainer.innerHTML = "";
+  updateListedRecipesCount(recipeCardContainer);
+}
+
+// Function to filter recipes based on search query
+function filterRecipes(searchQuery) {
+  searchQuery = searchQuery.toLowerCase();
+  return recipes.filter((recipe) => {
+    const title = recipe.name.toLowerCase();
+    const ingredients = recipe.ingredients.map((ingredient) =>
+      ingredient.ingredient.toLowerCase()
+    );
+    const description = recipe.description.toLowerCase();
+    return (
+      title.includes(searchQuery) ||
+      ingredients.some((ingredient) => ingredient.includes(searchQuery)) ||
+      description.includes(searchQuery)
+    );
+  });
+}
+
+function displayAllRecipeCards() {
+  const recipeCardContainer = document.getElementById("recipeCardContainer");
+  const cardsInstance = new Cards();
+
+  recipes.forEach((recipe) => {
+    const recipeCard = cardsInstance.createCard(recipe);
+    recipeCardContainer.appendChild(recipeCard);
+  });
+}
+
+// Function to update the interface with search results
+function updateInterface(matchingRecipes, searchQuery) {
+  const recipeCardContainer = document.getElementById("recipeCardContainer");
+  recipeCardContainer.innerHTML = "";
+
+  if (matchingRecipes.length === 0) {
+    const noResultsMessage = document.createElement("p");
+    noResultsMessage.textContent = `Aucune recette ne contient "${searchQuery}"`;
+    noResultsMessage.classList.add("no-results-message");
+    recipeCardContainer.appendChild(noResultsMessage);
   } else {
-    // Display all recipes when the search query is less than 3 characters
-    updateDisplayedRecipes(allRecipes);
-    iconClear.style.display = "none"; // Hide the X button when there is no search content
+    const cardsInstance = new Cards();
+
+    matchingRecipes.forEach((recipe) => {
+      const recipeCard = cardsInstance.createCard(recipe);
+      recipeCardContainer.appendChild(recipeCard);
+    });
   }
 }
-
-// Function to clear the search content and show all recipes
-function clearSearch(searchBar, handleSearch, searchBarFocus) {
-  searchBar.value = "";
-  handleSearch();
-  searchBarFocus();
-}
-
-// Function to show the search placeholder when the search bar is focused
-function showPlaceholder() {
-  const searchContent = document.querySelector(".searchContent");
-  searchContent.style.display = "block";
-}
-
-// Function to hide the search placeholder when the search bar is not focused
-function hidePlaceholder() {
-  const searchContent = document.querySelector(".searchContent");
-  searchContent.style.display = "none";
-}
-
-// Export the helper functions
-export { handleSearch, clearSearch, showPlaceholder, hidePlaceholder };

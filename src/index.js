@@ -1,30 +1,25 @@
-import Recipes from './models/recipes.js';
-import { searchRecipes, updateDisplayedRecipes } from './utils/helpers.js';
-import recipes from './data/recipes.js';
+import Cards from "./models/cards.js";
+import Recipes from "./models/recipes.js";
+import AdvancedSearch from "./models/tags.js";
+import { updateListedRecipesCount } from "./utils/countListedCards.js";
 
-const recipeCardContainer = document.getElementById('recipeCardContainer');
+document.addEventListener("DOMContentLoaded", () => {
+  const cardsInstance = new Cards();
+  cardsInstance.displayRecipeCards();
 
-document.addEventListener('DOMContentLoaded', () => {
-  const recipesData = recipes;
-  const recipeCardInstance = new Recipes(recipesData);
-  recipeCardInstance.initSearchBar();
+  const recipesInstance = new Recipes();
+  const advancedSearch = new AdvancedSearch();
+  const recipeCardContainer = document.getElementById("recipeCardContainer");
 
-  const dropdownHeaders = document.querySelectorAll('.dropdownHeader');
-  if (dropdownHeaders) {
-    dropdownHeaders.forEach((header) => {
-      header.addEventListener('click', () => {
-        const customDropdown = header.closest('.customDropdown');
-        recipeCardInstance.toggleDropdownOptions(customDropdown);
-      });
-    });
-  }
+  // Perform an initial search to populate recipe cards
+  advancedSearch.updateSearchResults();
 
-  // Display all recipes initially
-  recipeCardInstance.displayRecipesDOM(
-    recipeCardInstance.recipes.map((recipe) => recipe.id)
-  );
+  // Add event listeners for clicking and removing tags
+  advancedSearch.initTagSelectionListeners();
 
-  const searchQuery = 'searchQuery';
-  const matchingRecipes = searchRecipes(searchQuery, recipesData);
-  updateDisplayedRecipes(recipeCardContainer, matchingRecipes, recipeCardInstance.getRecipeCardDOM);
+  // Call the function to update the initial count
+  updateListedRecipesCount(recipeCardContainer);
+  
+  // Initialize dropdown header listeners
+  advancedSearch.initDropdownHeaderListeners();
 });

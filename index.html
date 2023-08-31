@@ -5,15 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="assets/logo/logo.png" />
+    <!-- Font -->
     <link
       href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
+    <!-- Bootstrap -->
     <link
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
+    <!-- Main Style -->
     <link rel="stylesheet" href="./src/styles/main.css" />
+    <!-- Font Awesome icons -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
@@ -21,16 +25,17 @@
     <title>Les petits plats</title>
   </head>
   <body>
-    <header class="headerPage">
+    <!-- Header -->
+    <header class="container headerPage">
       <img
-        src="public/logo/background.png"
+        src="assets/logo/background.png"
         class="bgImg"
         alt="background homepage"
       />
       <div class="headerElements">
         <a href="index.html">
           <img
-            src="public/logo/logo.png"
+            src="assets/logo/logo.png"
             class="logo"
             alt="Les Petits Plats homepage"
           />
@@ -56,110 +61,84 @@
     </header>
 
     <!-- Main content section -->
-    <main>
+    <main class="wrapper">
+      <!-- Advanced Search Container -->
       <div class="advancedSearchContainer">
-        <div class="advancedSearchRow row">
-          <!-- Left column with filters -->
-          <div class="filtersGroup col-md-12">
-            <div class="searchFields row">
-              <div class="searchField col-md-4">
-                <div class="customDropdown" data-category="ingredients">
-                  <div class="dropdownHeader">
-                    Ingrédients<i class="fa-solid fa-chevron-down"></i>
-                  </div>
-                  <div class="dropdownHeaderOpened">
-                    Ingrédients<i class="fa-solid fa-angle-up"></i>
-                    <div class="dropdownHeaderOpenedInput">
-                      <input type="text" />
-                      <p class="searchContentDropdown"></p>
-                      <span class="iconLoopDropdown">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                      </span>
-
-                      <div class="dropdownOptions"></div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="ingredientTagsContainer tagsContainer">
-                  <ul class="dropdownContent">
-                    <li
-                      class="tag"
-                      data-category="ingredients"
-                      data-value=""
-                    ></li>
-                  </ul>
-                </div>
-              </div>
-
-              <div class="searchField col-md-4">
-                <div class="customDropdown" data-category="appliance">
-                  <div class="dropdownHeader">
-                    Appareils<i class="fa-solid fa-chevron-down"></i>
-                  </div>
-                  <div class="dropdownHeaderOpened">
-                    Appareils<i class="fa-solid fa-angle-up"></i>
-                    <div class="dropdownHeaderOpenedInput">
-                      <input type="text" />
-                      <p class="searchContentDropdown"></p>
-                      <span class="iconLoopDropdown">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                      </span>
-
-                      <div class="dropdownOptions"></div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="applianceTagsContainer tagsContainer">
-                  <ul class="dropdownContent">
-                    <li
-                      class="tag"
-                      data-category="appliance"
-                      data-value=""
-                    ></li>
-                  </ul>
-                </div>
-              </div>
-
-              <div class="searchField col-md-4">
-                <div class="customDropdown" data-category="ustensiles">
-                  <div class="dropdownHeader">
-                    Ustensiles<i class="fa-solid fa-chevron-down"></i>
-                  </div>
-                  <div class="dropdownHeaderOpened">
-                    Ustensiles<i class="fa-solid fa-angle-up"></i>
-                    <div class="dropdownHeaderOpenedInput">
-                      <input type="text" />
-                      <p class="searchContentDropdown"></p>
-                      <span class="iconLoopDropdown">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                      </span>
-
-                      <div class="dropdownOptions"></div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="utensileTagsContainer tagsContainer">
-                  <ul class="dropdownContent">
-                    <li
-                      class="tag"
-                      data-category="ustensiles"
-                      data-value=""
-                    ></li>
-                  </ul>
-                </div>
-              </div>
+        <div class="row rowAdvancedSearch col-md-8">
+          <!-- Ingredients Dropdown -->
+          <div class="searchField">
+            <div class="dropdownHeader" data-category="ingredients">
+              Ingrédients<i class="fa-solid fa-chevron-down"></i>
             </div>
-            <!-- Right column with count of recipes listed -->
-            <div class="listedRecipesCount col-md-4">
-              <p id="resultCount"></p>
-              <div class="selectedTagsContainer"></div>
+            <div class="dropdownHeaderOpened" data-category="ingredients">
+              Ingrédients<i class="fa-solid fa-angle-up"></i>
+              <div class="dropdownHeaderOpenedInput">
+                <input type="text" class="ingredientSearchInput" />
+                <p class="searchContentDropdown"></p>
+                <span class="iconLoopDropdown">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+              </div>
+              <ul class="dropdownContent">
+                <!-- Dynamic tags -->
+              </ul>
+            </div>
+          </div>
+
+          <!-- Apparatus Dropdown -->
+
+          <!-- Appareils Dropdown -->
+          <div class="searchField">
+            <div class="dropdownHeader" data-category="appliance">
+              Appareils<i class="fa-solid fa-chevron-down"></i>
+            </div>
+            <div class="dropdownHeaderOpened" data-category="appliance">
+              Appareils<i class="fa-solid fa-angle-up"></i>
+              <div class="dropdownHeaderOpenedInput">
+                <input type="text" class="applianceSearchInput" />
+                <p class="searchContentDropdown"></p>
+                <span class="iconLoopDropdown">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+              </div>
+              <ul class="dropdownContent">
+                <!-- Dynamic tags -->
+              </ul>
+            </div>
+          </div>
+
+          <!-- Apparatus Dropdown -->
+
+          <!-- Ustensiles Dropdown -->
+          <div class="searchField">
+            <div class="dropdownHeader" data-category="ustensils">
+              Ustensiles<i class="fa-solid fa-chevron-down"></i>
+            </div>
+            <div class="dropdownHeaderOpened" data-category="ustensils">
+              Ustensiles<i class="fa-solid fa-angle-up"></i>
+              <div class="dropdownHeaderOpenedInput">
+                <input type="text" class="ustensilsSearchInput" />
+                <p class="searchContentDropdown"></p>
+                <span class="iconLoopDropdown">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+              </div>
+              <ul class="dropdownContent">
+                <!-- Dynamic tags -->
+              </ul>
             </div>
           </div>
         </div>
+        <!-- Apparatus Dropdown -->
+
+        <!-- Listed Recipes Count -->
+        <div class="listedRecipesCount col-md-4">
+          <p id="resultCount"></p>
+        </div>
       </div>
+
+      <!-- Selected tags list -->
+      <div id="tagsContainer"></div>
 
       <!-- Cards -->
       <div id="recipeCardContainer"></div>
@@ -169,7 +148,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script type="module" src="src/models/recipes.js"></script>
+    <!-- Load modules after the libraries -->
+    <script type="module" src="src/utils/search.js"></script>
+    <script type="module" src="src/models/cards.js"></script>
+    <script type="module" src="src/models/tags.js"></script>
+    <!-- Load main script last -->
     <script type="module" src="src/index.js"></script>
   </body>
 </html>
