@@ -13,15 +13,18 @@
     <!-- Bootstrap -->
     <link
       rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css"
     />
+
     <!-- Main Style -->
     <link rel="stylesheet" href="./src/styles/main.css" />
+
     <!-- Font Awesome icons -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
     />
+
     <title>Les petits plats</title>
   </head>
   <body>
@@ -67,69 +70,58 @@
         <div class="row rowAdvancedSearch col-md-8">
           <!-- Ingredients Dropdown -->
           <div class="searchField">
-            <div class="dropdownHeader" data-category="ingredients">
-              Ingrédients<i class="fa-solid fa-chevron-down"></i>
-            </div>
             <div class="dropdownHeaderOpened" data-category="ingredients">
-              Ingrédients<i class="fa-solid fa-angle-up"></i>
+              Ingrédients<i class="fas fa-angle-down"></i>
               <div class="dropdownHeaderOpenedInput">
-                <input type="text" class="ingredientSearchInput" />
+                <input type="text" class="ingredientSearchInput searchInput" />
+                <span class="closeButton">x</span>
                 <p class="searchContentDropdown"></p>
                 <span class="iconLoopDropdown">
-                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <i class="fas fa-search iconMagnifyingGlass"></i>
                 </span>
               </div>
-              <ul class="dropdownContent">
+              <ul class="dropdownContent ingredients-dropdown">
                 <!-- Dynamic tags -->
               </ul>
             </div>
           </div>
-
-          <!-- Apparatus Dropdown -->
 
           <!-- Appareils Dropdown -->
           <div class="searchField">
-            <div class="dropdownHeader" data-category="appliance">
-              Appareils<i class="fa-solid fa-chevron-down"></i>
-            </div>
             <div class="dropdownHeaderOpened" data-category="appliance">
-              Appareils<i class="fa-solid fa-angle-up"></i>
+              Appareils<i class="fas fa-angle-down"></i>
               <div class="dropdownHeaderOpenedInput">
-                <input type="text" class="applianceSearchInput" />
+                <input type="text" class="applianceSearchInput searchInput" />
+                <span class="closeButton">x</span>
                 <p class="searchContentDropdown"></p>
                 <span class="iconLoopDropdown">
-                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <i class="fas fa-search iconMagnifyingGlass"></i>
                 </span>
               </div>
-              <ul class="dropdownContent">
+              <ul class="dropdownContent appliance-dropdown">
                 <!-- Dynamic tags -->
               </ul>
             </div>
           </div>
 
-          <!-- Apparatus Dropdown -->
-
           <!-- Ustensiles Dropdown -->
           <div class="searchField">
-            <div class="dropdownHeader" data-category="ustensils">
-              Ustensiles<i class="fa-solid fa-chevron-down"></i>
-            </div>
             <div class="dropdownHeaderOpened" data-category="ustensils">
-              Ustensiles<i class="fa-solid fa-angle-up"></i>
+              Ustensiles<i class="fas fa-angle-down"></i>
               <div class="dropdownHeaderOpenedInput">
-                <input type="text" class="ustensilsSearchInput" />
+                <input type="text" class="ustensilsSearchInput searchInput" />
+                <span class="closeButton">x</span>
                 <p class="searchContentDropdown"></p>
                 <span class="iconLoopDropdown">
-                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <i class="fas fa-search iconMagnifyingGlass"></i>
                 </span>
               </div>
-              <ul class="dropdownContent">
+              <ul class="dropdownContent ustensils-dropdown">
                 <!-- Dynamic tags -->
               </ul>
             </div>
           </div>
         </div>
-        <!-- Apparatus Dropdown -->
 
         <!-- Listed Recipes Count -->
         <div class="listedRecipesCount col-md-4">
