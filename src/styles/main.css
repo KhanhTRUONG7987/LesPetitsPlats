@@ -190,10 +190,10 @@ li {
 }
 
 .searchTool .iconClear {
-  display: none;
+  display: block;
   z-index: 60000;
   font-size: large;
-  top: -0.19em;
+  top: -0.25em;
   right: -20em;
 }
 
@@ -534,7 +534,7 @@ p.recipe-description {
     margin-bottom: 1.4em;
   }
   .searchBar {
-    width: 720px;
+    width: 690px;
     height: 58px;
     font-size: 0.9em;
   }
@@ -570,6 +570,10 @@ p.recipe-description {
     font-size: 0.86em;
   }
 
+  .dropdownHeader {
+    font-size: 0.9em;
+  }
+
   .dropdownHeader i.fa-angle-down {
     margin-left: 0.1em;
   }
@@ -590,13 +594,13 @@ p.recipe-description {
 
   .searchTool .iconMagnifyingGlass,
   .searchTool .iconClear {
-    right: -17.35em;
+    right: -16.6em;
     top: -0.43em;
   }
 
   .searchTool .iconClear {
     top: -0.39em;
-    right: -17.5em;
+    right: -16.65em;
     font-size: medium;
   }
 }
@@ -615,6 +619,10 @@ p.recipe-description {
   .searchBar {
     width: 42em;
     height: 52px;
+  }
+
+  .dropdownHeader {
+    font-size: 0.9em;
   }
 
   .iconLoop {
@@ -649,10 +657,18 @@ p.recipe-description {
   }
 
   .sloganHeading {
-    font-size: 1.8em;
+    font-size: 1.5em;
     max-width: 80%;
   }
 
+  .searchBar {
+    width: 32em;
+    height: 52px;
+  }
+
+  .dropdownHeader {
+    font-size: 0.85em;
+  }
   .recipe-card h2 {
     font-size: 0.85em;
   }
@@ -673,5 +689,31 @@ p.recipe-description {
     padding: 0.3em 0.6em;
     border-radius: 0.7em;
     font-size: 0.8em;
+  }
+
+  .dropdownHeaderInput .iconMagnifyingGlass {
+    color: var(--light-gray);
+    font-size: 0.9em;
+    background-color: transparent;
+    right: -1.2em;
+    top: 0.8em;
+  }
+
+  .iconMagnifyingGlass {
+    width: 42px;
+    height: 42px;
+    border-radius: 0.3em;
+  }
+
+  .searchTool .iconMagnifyingGlass,
+  .searchTool .iconClear {
+    right: -10.99em;
+    top: 3.165em;
+  }
+
+  .searchTool .iconClear {
+    top: -0.28em;
+    right: -12.9em;
+    font-size: small;
   }
 }
