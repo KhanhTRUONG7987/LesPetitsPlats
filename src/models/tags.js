@@ -16,7 +16,7 @@ class AdvancedSearch {
     };
 
     // Get dropdown headers and recipe card container
-    this.dropdownHeaders = document.querySelectorAll(".dropdownHeaderOpened");
+    this.dropdownHeaders = document.querySelectorAll(".dropdownHeader");
     this.recipeCardContainer = document.getElementById("recipeCardContainer");
     this.cards = new Cards();
     this.tagsContainer = document.getElementById("tagsContainer");
@@ -50,6 +50,11 @@ class AdvancedSearch {
   //#################################################### on DROPDOWN #########################################################
   // Initialize dropdown header listeners
   initDropdownHeaderListeners() {
+    const arrows = document.querySelectorAll(".fa-angle-down");
+    arrows.forEach((arrow) => {
+      arrow.addEventListener("click", this.onClickArrow.bind(this));
+    });
+
     this.dropdownHeaders.forEach((header) => {
       header.addEventListener("click", () => {
         const category = header.getAttribute("data-category");
@@ -60,7 +65,7 @@ class AdvancedSearch {
 
   // TODO: Close all dropdowns except the specified category
   closeAllDropdowns(exceptCategory = null) {
-    const dropdownHeaders = document.querySelectorAll(".dropdownHeaderOpened");
+    const dropdownHeaders = document.querySelectorAll(".dropdownHeader");
     dropdownHeaders.forEach((header) => {
       const dropdownContent = header.nextElementSibling;
       if (dropdownContent) {
@@ -77,7 +82,7 @@ class AdvancedSearch {
   // TODO: Function to toggle the visibility of a dropdown category
   toggleDropdown(category) {
     const dropdownHeader = document.querySelector(
-      `.dropdownHeaderOpened[data-category="${category}"]`
+      `.dropdownHeader[data-category="${category}"]`
     );
     if (dropdownHeader) {
       const dropdownContent = dropdownHeader.nextElementSibling;
@@ -103,7 +108,7 @@ class AdvancedSearch {
       const category =
         dropdownContent.parentElement.getAttribute("data-category");
       const inputField = dropdownContent.parentElement.querySelector(
-        ".dropdownHeaderOpenedInput input"
+        ".dropdownHeaderInput input"
       );
 
       const originalTags = Array.from(dropdownContent.querySelectorAll("li"));
@@ -180,9 +185,10 @@ class AdvancedSearch {
         const clickedTag = event.target.closest("li");
         if (clickedTag) {
           const tagText = clickedTag.textContent.toLowerCase();
-          const category = dropdownContent.getAttribute("data-category");
+          const category = clickedTag.getAttribute("data-category");
 
           if (this.isTagSelected(category, tagText)) {
+            console.log("I REMOVE TAG", category, tagText);
             this.onRemoveTag(category, tagText); // Remove the tag from #tagsContainer
             clickedTag.classList.remove("selected"); // Remove styling when removed
           } else {
@@ -190,8 +196,8 @@ class AdvancedSearch {
             clickedTag.classList.add("selected"); // Apply styling when added
           }
 
-          this.highlightSelectedTags(category);
-          this.updateSearchResults(); // Update search results when a tag is selected
+          //this.highlightSelectedTags(category);
+          //this.updateSearchResults(); // Update search results when a tag is selected
         }
       });
 
@@ -233,6 +239,18 @@ class AdvancedSearch {
         }
       });
     });
+  }
+
+  onClickArrow(e) {
+    const element = e.target;
+    const parent = element.parentElement;
+    if (parent) {
+      if (parent.classList.contains("open")) {
+        parent.classList.remove("open");
+      } else {
+        parent.classList.add("open");
+      }
+    }
   }
 
   //-----------------------------------------------------------------------------------------------------
@@ -297,7 +315,7 @@ class AdvancedSearch {
 
     // Clear the advanced search tag by resetting the input field
     const inputField = document.querySelector(
-      `.dropdownContent[data-category="${category}"] .dropdownHeaderOpenedInput input`
+      `.dropdownContent[data-category="${category}"] .dropdownHeaderInput input`
     );
 
     if (inputField) {
@@ -343,6 +361,8 @@ class AdvancedSearch {
       (tags) => tags.length === 0
     );
 
+    console.log("---> areTagsEmpty", areTagsEmpty);
+
     if (isMainSearchEmpty && areTagsEmpty) {
       // Reset the search results and return to the initial state
       this.initSearchFields();
@@ -375,6 +395,8 @@ class AdvancedSearch {
         ...recipe.ingredients.map((ingredient) =>
           ingredient.ingredient.toLowerCase()
         ),
+        recipe.name,
+        recipe.description,
         recipe.appliance.toLowerCase(),
         ...recipe.ustensils.map((ustensil) => ustensil.toLowerCase()),
       ];
@@ -385,6 +407,12 @@ class AdvancedSearch {
         .split(" ");
 
       // Check if all queryWords are found in matchingTags
+
+      if (recipe.name.includes("cassés")) {
+        console.log("queryWords", queryWords);
+        console.log("matching tags", matchingTags);
+      }
+
       const hasMatchingTags = queryWords.every((word) =>
         matchingTags.some((tag) => tag.includes(word))
       );
@@ -397,6 +425,10 @@ class AdvancedSearch {
       const hasMatchingSelectedTags = selectedTags.every((tag) =>
         matchingTags.includes(tag.toLowerCase())
       );
+
+      if (recipe.name.includes("cassés")) {
+        console.log("RESULT -->", hasMatchingTags, hasMatchingSelectedTags);
+      }
 
       // Return recipes that satisfy both main search query and selected tags criteria
       return hasMatchingTags && hasMatchingSelectedTags;
@@ -417,9 +449,7 @@ class AdvancedSearch {
 
   // Initialize search input fields
   initSearchFields() {
-    const searchInputs = document.querySelectorAll(
-      ".dropdownHeaderOpenedInput"
-    );
+    const searchInputs = document.querySelectorAll(".dropdownHeaderInput");
 
     searchInputs.forEach((input) => {
       input.addEventListener("input", () => {
@@ -442,7 +472,7 @@ class AdvancedSearch {
   // Update dropdown options
   updateDropdownOptions(category, options) {
     const dropdownContent = document.querySelector(
-      `.dropdownHeaderOpened[data-category="${category}"] .dropdownContent`
+      `.dropdownHeader[data-category="${category}"] .dropdownContent`
     );
 
     if (dropdownContent) {
@@ -451,6 +481,7 @@ class AdvancedSearch {
       options.forEach((option) => {
         const li = document.createElement("li");
         li.textContent = option;
+        li.dataset.category = category;
         dropdownContent.appendChild(li);
       });
     } else {

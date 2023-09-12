@@ -9,10 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
   cardsInstance.displayRecipeCards();
 
   const recipesInstance = new Recipes();
-  const advancedSearch = new AdvancedSearch();
   const recipeCardContainer = document.getElementById("recipeCardContainer");
 
   // Call the function to update the initial count
   updateListedRecipesCount(recipeCardContainer);
 });
-

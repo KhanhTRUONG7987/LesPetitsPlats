@@ -27,7 +27,7 @@ img {
 .wrapper {
   max-width: 1440px;
   /* margin: 0 2em 2em 2em; */
-  margin: 0 auto;
+  margin: 0 5em 0 5em;
 }
 
 :root {
@@ -67,6 +67,11 @@ li {
   text-decoration: none;
 }
 
+ol,
+ul {
+  padding-left: 0;
+}
+
 li {
   list-style-type: none;
 }
@@ -103,10 +108,11 @@ li {
 .sloganHeading {
   text-align: center;
   color: var(--yellow);
-  font-size: 2.2em;
-  max-width: 80%;
+  font-size: 2.5em;
+  max-width: 70%;
   font-family: var(--font-Anton);
-  margin-bottom: 1em;
+  margin-bottom: 2em;
+  line-height: 1.5em;
 }
 
 .searchTool {
@@ -114,17 +120,18 @@ li {
   align-items: center;
   justify-content: center;
   max-width: 100%;
+  position: relative;
 }
 
 .searchBar {
-  width: 50em;
-  height: 3em;
+  width: 900px;
+  height: 68px;
   border-radius: 1em;
   background: var(--white);
   padding-left: 1em;
   padding-right: 4em;
   font-size: 1em;
-  position: relative;
+  position: absolute;
   margin-top: 1em;
   display: flex;
   align-items: center;
@@ -137,13 +144,12 @@ li {
   font-weight: 200;
 }
 
-/* Styles for elements inside searchBar */
+/* Styles for elements inside .searchTool */
 .searchContent,
 .iconLoop,
 .iconMagnifyingGlass,
 .iconClear {
   position: absolute;
-  transform: translateX(-50%);
 }
 
 .searchContent {
@@ -158,8 +164,8 @@ li {
   justify-content: center;
   align-items: center;
   border-radius: 0.5em;
-  width: 2.8em;
-  height: 2.8em;
+  width: 51px;
+  height: 52px;
 }
 
 .iconMagnifyingGlass {
@@ -168,23 +174,33 @@ li {
   align-items: center;
   color: var(--white);
   font-size: 1.6em;
-  width: 70%;
-  height: 70%;
-  border-radius: 0.2em;
+  width: 51px;
+  height: 52px;
+  border-radius: 10px;
   background-color: var(--black);
 }
 
-.search .iconMagnifyingGlass {
-  top: 33%; 
-  right: -16em;
+.searchTool .iconMagnifyingGlass,
+.searchTool .iconClear {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  right: -16.2em;
+  top: 0.3em;
 }
 
-.search .iconClear {
+.searchTool .iconClear {
   display: none;
   z-index: 60000;
   font-size: large;
-  top: 73.5%; 
-  right: 25.5%; 
+  top: -0.19em;
+  right: -20em;
+}
+
+.iconMagnifyingGlass .iconLoop {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* ################################################################ */
@@ -200,18 +216,19 @@ li {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
+  gap: 2em;
 }
 
 .recipe-card {
-  width: calc(33.33% - 20px);
-  margin: 10px;
+  width: calc(33.33% - 1.5em);
   height: 38.5em;
   object-fit: cover;
   flex-shrink: 0;
-  border-radius: 2em;
+  border-radius: 21px;
   background: var(--white);
   box-shadow: 0em 0.3em 1em 1em rgba(0, 0, 0, 0.04);
   position: relative;
+  margin-bottom: 1.6em;
 }
 
 .recipe-card-image {
@@ -229,12 +246,11 @@ li {
   width: 100%;
   height: 100%;
   display: block;
-  border-top-left-radius: 1em;
-  border-top-right-radius: 1em;
+  border-radius: 21px;
 }
 
 .recipe-card-content {
-  padding: 1em 2.2em 1em 2.2em;
+  padding: 29px 25px 0 25px;
   display: flex;
   flex-direction: column;
   gap: 0.5em;
@@ -281,7 +297,6 @@ p.recipe-description {
   width: 50%;
   white-space: pre-line;
   margin-bottom: 0.8em;
-  margin-left: -1em;
   color: var(--gray);
 }
 
@@ -296,13 +311,13 @@ p.recipe-description {
   top: 1em;
   right: 1em;
   display: inline-flex;
-  padding: 0.5em 1em;
+  padding: 0.3em 1.2em;
   justify-content: center;
   align-items: center;
   gap: 1em;
   border-radius: 1em;
   background: var(--yellow);
-}
+} 
 
 /* ################################################################ */
 /* advanced search settings ======================================================== */
@@ -321,64 +336,85 @@ p.recipe-description {
   position: relative;
 }
 
-.dropdownHeaderOpened {
+.dropdownHeader {
   z-index: 2000;
   position: relative;
   top: 0;
   left: 0;
   width: 100%;
-  padding: 1.5em 2em 1em 1em;
-  border-radius: 1em;
+  padding: 1em 2em 1em 1em;
+  border-radius: 0.5em;
   background: var(--white);
   font-size: 1em;
   cursor: pointer;
-  display: inline-block;
   margin-right: 1em;
+}
+
+.row {
+  --bs-gutter-x: 0.1rem;
 }
 
 .rowAdvancedSearch {
   margin-left: 0.01em;
 }
 
-.dropdownHeaderOpened i.fa-angle-down {
-  margin-left: 1em;
+.dropdownHeader.open .fa-angle-down {
+  transform: rotate(180deg);
+  top: 1.3em;
 }
 
-.dropdownHeaderOpenedInput {
+.dropdownHeader .dropdownHeaderInput,
+.dropdownHeader .dropdownContent {
+  display: none;
+}
+
+.dropdownHeader.open .dropdownHeaderInput,
+.dropdownHeader.open .dropdownContent {
+  display: inline-block;
+}
+
+.dropdownHeader i.fa-angle-down {
+  padding-top: 0.3em;
+  position: absolute;
+  right: 1em;
+}
+
+.dropdownHeaderInput {
   position: relative;
   margin-top: 0.5em;
   width: 100%;
 }
 
-.dropdownHeaderOpenedInput .iconMagnifyingGlass {
+.dropdownHeaderInput .iconMagnifyingGlass {
   color: var(--light-gray);
   font-size: 0.9em;
-  background-color: var(--white);
-  right: 0.1em;
+  background-color: transparent;
+  right: -1.7em;
   top: 0.8em;
 }
 
 /* Hide dropdown contents by default */
-.dropdownHeaderOpened .dropdownContent {
-  display: block;
+.dropdownHeader .dropdownContent {
   max-height: 8em;
+  width: 100%;
   overflow-y: auto;
 }
 
 /* Define styles for the active state */
-.dropdownHeaderOpened.active .dropdownContent {
-  display: block;
+.dropdownHeader.active .dropdownContent {
   max-height: 8em;
   overflow-y: auto;
 }
 
-.dropdownHeaderOpenedInput .searchInput {
-  padding-right: 2em;
+.dropdownHeaderInput .searchInput {
+  position: absolute;
   width: 100%;
+  right: 0.01em;
+  left: 0.03em;
 }
 
 /* Style the close button */
-.dropdownHeaderOpenedInput .closeButton {
+.dropdownHeaderInput .closeButton {
   position: absolute;
   top: -0.035em;
   right: 2.5em;
@@ -391,7 +427,7 @@ p.recipe-description {
 }
 
 /* Show the close button when the input field is not empty */
-.dropdownHeaderOpenedInput input:not(:empty) + .closeButton {
+.dropdownHeaderInput input:not(:empty) + .closeButton {
   display: block;
 }
 
@@ -430,13 +466,13 @@ p.recipe-description {
 /* Styling for the filtered tags */
 .dropdownContent li {
   flex: 1 0 100%;
-  padding: 0.5em 1em;
+  padding: 0.3em 0em;
   cursor: pointer;
   background: var(--white);
-  margin-left: -1em;
-  margin-bottom: 0.3em;
-  padding-left: 1em;
+  margin-top: 0.3em;
   transition: background-color 0.3s, font-weight 0.3s;
+  font-weight: lighter;
+  width: 100%;
 }
 
 .dropdownContent li:last-child {
@@ -454,7 +490,7 @@ p.recipe-description {
   margin-left: 5px;
 }
 
-.dropdownHeaderOpenedInput input {
+.dropdownHeaderInput input {
   margin-right: 5px;
 }
 
@@ -494,27 +530,28 @@ p.recipe-description {
     width: 11em;
   }
   .sloganHeading {
-    font-size: 1.8em;
+    font-size: 2.3em;
+    margin-bottom: 1.4em;
   }
   .searchBar {
-    width: 54em;
-    height: 3.5em;
-    font-size: 0.8em;
+    width: 720px;
+    height: 58px;
+    font-size: 0.9em;
   }
+
+  /* .searchBar::placeholder {
+    font-size: 0.9em;
+    font-weight: 200;
+  } */
 
   .iconLoop {
     right: 0.26em;
-    width: 2em;
-    height: 2em;
+    width: 1.2em;
+    height: 1.2em;
   }
 
   .iconMagnifyingGlass {
     font-size: 1.3em;
-  }
-
-  .search .iconMagnifyingGlass {
-    top: 33%; 
-    right: 5.4em;
   }
 
   .recipe-card h2 {
@@ -533,13 +570,13 @@ p.recipe-description {
     font-size: 0.86em;
   }
 
-  .dropdownHeaderOpened i.fa-angle-down {
+  .dropdownHeader i.fa-angle-down {
     margin-left: 0.1em;
   }
 
   .recipe-card-content p.recipe-time {
-    padding: 0.4em 0.7em;
-    border-radius: 0.7em;
+    padding: 0.3em 1.2em;
+    border-radius: 1em;
     font-size: 0.9em;
   }
 
@@ -551,12 +588,16 @@ p.recipe-description {
     height: calc(42em / 3);
   }
 
-  .search .iconClear {
-    display: none;
-    z-index: 60000;
-    font-size: large;
-    top: 76.5%; 
-    right: 20%; 
+  .searchTool .iconMagnifyingGlass,
+  .searchTool .iconClear {
+    right: -17.35em;
+    top: -0.43em;
+  }
+
+  .searchTool .iconClear {
+    top: -0.39em;
+    right: -17.5em;
+    font-size: medium;
   }
 }
 
@@ -566,31 +607,39 @@ p.recipe-description {
   }
 
   .sloganHeading {
-    font-size: 1.6em;
+    font-size: 2.1em;
     max-width: 80%;
+    margin-bottom: 1.2em;
   }
+
   .searchBar {
-    width: 48em;
-    height: 3.2em;
-    font-size: 0.8em;
+    width: 42em;
+    height: 52px;
   }
+
   .iconLoop {
-    right: 0.5em;
-    width: 2em;
-    height: 2em;
+    right: 0.2em;
+    margin-top: -8em;
+    width: 32px;
+    height: 32px;
   }
+
   .iconMagnifyingGlass {
-    font-size: 1.3em;
+    width: 32px;
+    height: 32px;
+    border-radius: 0.3em;
   }
 
-  .search .iconMagnifyingGlass {
-    top: 33%; 
-    right: 6.5em;
+  .searchTool .iconMagnifyingGlass,
+  .searchTool .iconClear {
+    right: -14.25em;
+    top: 3.4em;
   }
 
-  .iconClear {
-    right: 0.5em;
-    font-size: medium;
+  .searchTool .iconClear {
+    top: -0.28em;
+    right: -18.5em;
+    font-size: small;
   }
 }
 
@@ -600,29 +649,8 @@ p.recipe-description {
   }
 
   .sloganHeading {
-    font-size: 1.2em;
+    font-size: 1.8em;
     max-width: 80%;
-  }
-  .searchBar {
-    width: 42em;
-    height: 2.8em;
-    height: 3em;
-  }
-
-  .iconLoop {
-    right: 0.2em;
-    margin-top: -8em;
-    width: 1.8em;
-    height: 1.8em;
-  }
-
-  .iconMagnifyingGlass {
-    font-size: 1em;
-  }
-
-  .search .iconMagnifyingGlass {
-    top: 33%; 
-    right: 5.2em;
   }
 
   .recipe-card h2 {
