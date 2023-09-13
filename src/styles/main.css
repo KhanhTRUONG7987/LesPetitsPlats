@@ -190,7 +190,7 @@ li {
 }
 
 .searchTool .iconClear {
-  display: block;
+  display: none;
   z-index: 60000;
   font-size: large;
   top: -0.25em;
@@ -317,7 +317,7 @@ p.recipe-description {
   gap: 1em;
   border-radius: 1em;
   background: var(--yellow);
-} 
+}
 
 /* ################################################################ */
 /* advanced search settings ======================================================== */
@@ -559,7 +559,7 @@ p.recipe-description {
   }
 
   .recipe-card h3 {
-    font-size: 0.8em;
+    font-size: 0.85em;
   }
 
   p.recipe-description {
@@ -602,6 +602,10 @@ p.recipe-description {
     top: -0.39em;
     right: -16.65em;
     font-size: medium;
+  }
+
+  .dropdownHeaderInput .iconMagnifyingGlass {
+    right: -2.2em;
   }
 }
 
@@ -649,6 +653,10 @@ p.recipe-description {
     right: -18.5em;
     font-size: small;
   }
+
+  .dropdownHeaderInput .iconMagnifyingGlass {
+    right: -1em;
+  }
 }
 
 @media screen and (max-width: 680px) {
@@ -692,11 +700,7 @@ p.recipe-description {
   }
 
   .dropdownHeaderInput .iconMagnifyingGlass {
-    color: var(--light-gray);
-    font-size: 0.9em;
-    background-color: transparent;
-    right: -1.2em;
-    top: 0.8em;
+    right: -1.7em;
   }
 
   .iconMagnifyingGlass {

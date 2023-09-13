@@ -196,8 +196,11 @@ class AdvancedSearch {
             clickedTag.classList.add("selected"); // Apply styling when added
           }
 
-          //this.highlightSelectedTags(category);
-          //this.updateSearchResults(); // Update search results when a tag is selected
+          // Use the debounced function to update the search results
+          clearTimeout(this.debounceTimer); // Clear the previous timer
+          this.debounceTimer = setTimeout(() => {
+            this.updateSearchResults();
+          }, 300);
         }
       });
 
@@ -453,7 +456,11 @@ class AdvancedSearch {
 
     searchInputs.forEach((input) => {
       input.addEventListener("input", () => {
-        this.updateSearchResults();
+        // Use the debounced function to update the search results
+        clearTimeout(this.debounceTimer); // Clear the previous timer
+        this.debounceTimer = setTimeout(() => {
+          this.updateSearchResults();
+        }, 300);
       });
     });
   }
