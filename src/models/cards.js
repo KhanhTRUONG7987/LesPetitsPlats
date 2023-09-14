@@ -122,6 +122,17 @@ class Cards {
     recipeCard.appendChild(recipeContentWrapper);
     return recipeCard;
   }
+
+  // method to display recipes based on a list
+  displayRecipes(recipeList) {
+    const recipeCardContainer = document.getElementById("recipeCardContainer");
+    recipeCardContainer.innerHTML = "";
+
+    recipeList.forEach((recipeId) => {
+      const recipeCard = this.createCard(recipeId);
+      recipeCardContainer.appendChild(recipeCard);
+    });
+  }
 }
 
 export default Cards;
