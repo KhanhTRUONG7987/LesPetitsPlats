@@ -1,39 +1,29 @@
-// Import necessary modules and data
 import recipes from "../data/recipes.js";
 import Cards from "./cards.js";
 import { updateListedRecipesCount } from "../utils/countListedCards.js";
 
-// Select the search bar element
 const searchBar = document.querySelector(".searchBar");
 
 const searchInputs = document.querySelectorAll(".dropdownHeaderInput input");
 
 class AdvancedSearch {
   constructor() {
-    // Initialize selected tags for advanced search
     this.selectedTags = {
       ingredients: [],
       appliance: [],
       ustensils: [],
     };
-
-    // Add a property to keep track of selected tags' elements in each category's dropdown
     this.selectedTagsElements = {
       ingredients: [],
       appliance: [],
       ustensils: [],
     };
-
-    // Get dropdown headers and recipe card container
     this.dropdownHeaders = document.querySelectorAll(".dropdownHeader");
     this.recipeCardContainer = document.getElementById("recipeCardContainer");
     this.cards = new Cards();
     this.tagsContainer = document.getElementById("tagsContainer");
-
-    // Add a property to track the active dropdown
     this.activeDropdown = null;
 
-    // Define the debounce function
     this.debounce = function (func, wait) {
       let timeout;
       return function () {
@@ -52,46 +42,84 @@ class AdvancedSearch {
       this.updateSearchResults();
     }, 300);
 
-    // Initialize the advanced search interface
     this.init();
   }
 
-  // Initialize advanced search functionality
   init() {
     this.initDropdownHeaderListeners();
     this.initSearchFields();
     this.initTagSelectionListeners();
 
-    // Add an event listener to all .closeButton elements
+    this.addCloseButtonListeners();
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const searchToolInput = document.querySelector(".searchToolInput");
+      if (searchToolInput) {
+        searchToolInput.addEventListener("input", () => {
+          this.clearTagsContainer();
+          this.resetAllDropdowns();
+          this.triggerSearchResultsUpdate();
+        });
+      }
+    });
+
+    searchBar.addEventListener("input", () => {
+      this.updateAdvancedSearchFields();
+      this.triggerSearchResultsUpdate();
+    });
+
+    this.setupInputListeners();
+
+    const clearButton = document.querySelector(".iconClear");
+    clearButton.addEventListener("click", () => {
+      this.clearSearchBar();
+      if (!this.checkTagsContainerEmpty()) {
+        this.clearTagsContainer();
+        this.triggerSearchResultsUpdate();
+      }
+    });
+
+    this.updateAdvancedSearchFields();
+    this.triggerSearchResultsUpdate();
+  }
+
+  triggerSearchResultsUpdate() {
+    this.updateNeeded = true;
+    this.updateSearchResults();
+  }
+
+  addCloseButtonListeners() {
     const closeButtons = document.querySelectorAll(
       ".dropdownHeaderInput .closeButton"
     );
 
     closeButtons.forEach((closeButton) => {
       closeButton.addEventListener("click", () => {
-        const inputField = closeButton.parentElement.querySelector("input");
-        if (inputField) {
-          const category = inputField.getAttribute("data-category");
-          inputField.value = ""; // Clear the input field
-          closeButton.style.display = "none"; // Hide the closeButton
-          this.resetDropdown(category);
-          const tag = inputField.value.trim().toLowerCase();
-          this.removeSelectedTag(category, tag);
-          this.updateSearchResults();
-          this.checkTagsContainerEmpty();
-        }
+        this.handleCloseButtonClick(closeButton);
       });
     });
+  }
 
-    searchBar.addEventListener("input", () => {
-      this.updateAdvancedSearchFields();
-      this.updateSearchResults();
-    });
+  handleCloseButtonClick(closeButton) {
+    const inputField = closeButton.parentElement.querySelector("input");
+    if (inputField) {
+      const category = inputField.getAttribute("data-category");
+      inputField.value = "";
+      closeButton.style.display = "none";
+      this.resetDropdown(category);
+      const tag = inputField.value.trim().toLowerCase();
+      this.removeSelectedTag(category, tag);
+      this.triggerSearchResultsUpdate();
+      this.checkTagsContainerEmpty();
+    }
+  }
 
+  setupInputListeners() {
     for (const input of searchInputs) {
       input.addEventListener("input", () => {
-        const category = input.parentElement.getAttribute("data-category");
-
+        const category = input
+          .closest(".dropdownHeader")
+          .getAttribute("data-category");
         if (category) {
           this.updateLocalDropdownOptions(category);
         } else {
@@ -99,14 +127,6 @@ class AdvancedSearch {
         }
       });
     }
-
-    const clearButton = document.querySelector(".iconClear");
-    clearButton.addEventListener("click", () => {
-      this.clearSearchBar();
-    });
-
-    this.updateAdvancedSearchFields();
-    this.updateSearchResults();
   }
 
   //############################ on updating dropdowns based on the input in the main search ################################
@@ -344,7 +364,7 @@ class AdvancedSearch {
     // Initialize the debounced function
     const debouncedUpdateSearchResults = this.debounce(() => {
       this.updateSearchResults(); // Call the updateSearchResults directly
-    }, 300);
+    }, 300); // Adjust the debounce delay time as needed
 
     searchInputs.forEach((input) => {
       const category = input.parentElement.getAttribute("data-category"); // Get the category from the parent element
@@ -403,9 +423,14 @@ class AdvancedSearch {
 
   // Update dropdown options based on the input within each dropdown
   updateLocalDropdownOptions(category) {
+    console.log("Selected category:", category);
+    //const dropdownContent = document.querySelector(`.${category}-dropdown`);
     const dropdownContent = document.querySelector(
       `.dropdownContent[data-category="${category}"]`
     );
+    const searchContent = document.querySelector(`.${category}SearchInput`);
+
+    const options = dropdownContent.querySelectorAll("li");
 
     if (dropdownContent) {
       const allOptions = this.collectTagsFromRecipes(category);
@@ -459,8 +484,11 @@ class AdvancedSearch {
     inputField.nextElementSibling.style.display = "none";
     const tag = inputField.value.trim().toLowerCase();
     this.removeSelectedTag(category, tag);
+
+    // Update the dropdown options based on displayed recipes
+    this.updateDropdownOptions(category, this.collectTagsFromRecipes(category));
     this.updateAdvancedSearchFields(); // Update the dropdown options
-    this.updateSearchResults();
+
     this.checkTagsContainerEmpty();
   }
 
@@ -546,6 +574,16 @@ class AdvancedSearch {
     tagsContainer.addEventListener("click", (event) => {
       this.handleTagContainerClick(event);
     });
+  }
+
+  // check if #tagsContainer is empty
+  checkTagsContainerEmpty() {
+    return this.tagsContainer.children.length === 0;
+  }
+
+  // clear #tagsContainer
+  clearTagsContainer() {
+    this.tagsContainer.innerHTML = ""; // Clear the #tagsContainer
   }
 
   // Update the display of selected tags
@@ -700,16 +738,22 @@ class AdvancedSearch {
       const tag = tagContainer.getAttribute("data-tag");
 
       // Remove the tag from the selected tags
-      this.removeSelectedTag(category, tag);
+      this.onRemoveTag(category, tag);
 
       // Remove the .selected class from related elements in the dropdown
-      this.removeSelectedClassFromDropdown(category, tag); // This is where it's called
+      this.removeSelectedClassFromDropdown(category, tag);
 
       // Remove the tag container from the #tagsContainer
       tagContainer.remove();
 
-      // Update the display and search results
-      this.updateSearchResults();
+      // Check if the searchBar is empty
+      if (searchBar.value.trim() === "") {
+        // If searchBar is empty, display all recipes
+        this.displayFilteredRecipes(recipes);
+      } else {
+        // Update the display and search results
+        this.updateSearchResults();
+      }
     }
   }
 
@@ -841,23 +885,27 @@ class AdvancedSearch {
   //############################################## on combined search & RESULTS ####################################################
   // Update the search results
   updateSearchResults() {
-    console.log("Updating search results...");
-    const mainSearchQuery = this.getMainSearchQuery();
-    const advancedSearchQuery = this.getAdvancedSearchQuery();
+    // Delay the updateSearchResults function by 300ms after the last input
+    clearTimeout(this.updateSearchResultsTimeout);
+    this.updateSearchResultsTimeout = setTimeout(() => {
+      console.log("Updating search results...");
+      const mainSearchQuery = this.getMainSearchQuery();
+      const advancedSearchQuery = this.getAdvancedSearchQuery();
 
-    // Reset search fields if both queries are empty
-    if (this.isSearchEmpty(mainSearchQuery, advancedSearchQuery)) {
-      this.resetSearchFields();
-      return;
-    }
+      // Reset search fields if both queries are empty
+      if (this.isSearchEmpty(mainSearchQuery, advancedSearchQuery)) {
+        this.resetSearchFields();
+        return;
+      }
 
-    const combinedSearchCriteria = this.combineSearchCriteria(
-      mainSearchQuery,
-      advancedSearchQuery
-    );
-    const filteredRecipes = this.filterRecipes(combinedSearchCriteria);
-    this.displayFilteredRecipes(filteredRecipes);
-    console.log("Search results updated.");
+      const combinedSearchCriteria = this.combineSearchCriteria(
+        mainSearchQuery,
+        advancedSearchQuery
+      );
+      const filteredRecipes = this.filterRecipes(combinedSearchCriteria);
+      this.displayFilteredRecipes(filteredRecipes);
+      console.log("Search results updated.");
+    }, 300);
   }
 
   // Get the main search query
@@ -950,7 +998,6 @@ class AdvancedSearch {
     });
     updateListedRecipesCount(this.recipeCardContainer);
   }
-
   //###################################### collect ARRAYS OF DROPDOWNS' OPTIONS ##################################################
   // Collect all tags from all recipes
   collectAllTags() {
