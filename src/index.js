@@ -1,5 +1,5 @@
 import Cards from "./models/cards.js";
-import Recipes from "./models/recipes.js";
+import Recipes from "./models/mainSearch.js";
 import AdvancedSearch from "./models/tags.js";
 import { updateListedRecipesCount } from "./utils/countListedCards.js";
 

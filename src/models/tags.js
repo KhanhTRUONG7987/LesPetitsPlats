@@ -6,6 +6,8 @@ import { updateListedRecipesCount } from "../utils/countListedCards.js";
 // Select the search bar element
 const searchBar = document.querySelector(".searchBar");
 
+const searchInputs = document.querySelectorAll(".dropdownHeaderInput input");
+
 class AdvancedSearch {
   constructor() {
     // Initialize selected tags for advanced search
@@ -54,7 +56,7 @@ class AdvancedSearch {
     this.init();
   }
 
-  // Initialize search functionality
+  // Initialize advanced search functionality
   init() {
     this.initDropdownHeaderListeners();
     this.initSearchFields();
@@ -86,6 +88,18 @@ class AdvancedSearch {
       this.updateSearchResults();
     });
 
+    for (const input of searchInputs) {
+      input.addEventListener("input", () => {
+        const category = input.parentElement.getAttribute("data-category");
+
+        if (category) {
+          this.updateLocalDropdownOptions(category);
+        } else {
+          console.error("Category not found for input element.");
+        }
+      });
+    }
+
     const clearButton = document.querySelector(".iconClear");
     clearButton.addEventListener("click", () => {
       this.clearSearchBar();
@@ -94,347 +108,8 @@ class AdvancedSearch {
     this.updateAdvancedSearchFields();
     this.updateSearchResults();
   }
-  //############################################## on mainSearch & RESULTS ####################################################
-  // Update the search results
-  updateSearchResults() {
-    const mainSearchQuery = searchBar.value.trim().toLowerCase();
-    const advancedSearchQuery = this.getSelectedTags();
 
-    // Remove empty arrays and undefined values from advancedSearchQuery
-    for (const key in advancedSearchQuery) {
-      if (
-        Array.isArray(advancedSearchQuery[key]) &&
-        advancedSearchQuery[key].length === 0
-      ) {
-        delete advancedSearchQuery[key];
-      }
-    }
-
-    console.log("Main Search Query:", mainSearchQuery);
-    console.log("Advanced Search Query:", advancedSearchQuery);
-
-    // Check if both the main search query and advanced search tags are empty
-    const isMainSearchEmpty = mainSearchQuery.trim() === "";
-    const areTagsEmpty = Object.values(advancedSearchQuery).every(
-      (tags) => tags.length === 0
-    );
-
-    console.log("---> areTagsEmpty", areTagsEmpty);
-
-    if (isMainSearchEmpty && areTagsEmpty) {
-      // Reset the search results and return to the initial state
-      this.initSearchFields();
-      // return;
-    }
-
-    // Combine the main search query and advanced search tags
-    const combinedSearchCriteria = {
-      mainSearchQuery,
-      ...advancedSearchQuery,
-    };
-
-    console.log("Combined Search Criteria:", combinedSearchCriteria);
-
-    // Filter recipes based on combined criteria
-    const filteredRecipes = this.filterRecipes(combinedSearchCriteria);
-
-    console.log("Filtered Recipes:", filteredRecipes);
-
-    // Display filtered recipes
-    this.displayFilteredRecipes(filteredRecipes);
-  }
-
-  // Filter recipes based on search criteria
-  filterRecipes(searchCriteria) {
-    // Use the `recipes` array from data source
-    return recipes.filter((recipe) => {
-      // Extract all the tags from the recipe, including ingredients, appliance, and ustensils
-      const matchingTags = [
-        ...recipe.ingredients.map((ingredient) =>
-          ingredient.ingredient.toLowerCase()
-        ),
-        recipe.name,
-        recipe.description,
-        recipe.appliance.toLowerCase(),
-        ...recipe.ustensils.map((ustensil) => ustensil.toLowerCase()),
-      ];
-
-      // Get the main search query (lowercase)
-      const queryWords = searchCriteria.mainSearchQuery
-        .toLowerCase()
-        .split(" ");
-
-      // Check if all queryWords are found in matchingTags
-      const hasMatchingTags = queryWords.every((word) =>
-        matchingTags.some((tag) => tag.includes(word))
-      );
-
-      // Check if all selected tags (if any) are present in matchingTags
-      const selectedTags = [].concat(
-        ...Object.values(searchCriteria).filter(Array.isArray)
-      );
-
-      const hasMatchingSelectedTags = selectedTags.every((tag) =>
-        matchingTags.includes(tag.toLowerCase())
-      );
-
-      // Return recipes that satisfy both main search query and selected tags criteria
-      return hasMatchingTags && hasMatchingSelectedTags;
-    });
-  }
-
-  // Display filtered recipes
-  displayFilteredRecipes(filteredRecipes) {
-    this.recipeCardContainer.innerHTML = "";
-    filteredRecipes.forEach((recipe) => {
-      const recipeCard = this.cards.createCard(recipe);
-      this.recipeCardContainer.appendChild(recipeCard);
-    });
-    updateListedRecipesCount(this.recipeCardContainer);
-  }
-
-  // Inside the handleInputFieldInput method
-  handleInputFieldInput(inputField, category) {
-    const inputValue = inputField.value.trim().toLowerCase();
-    const dropdownContent = inputField.parentElement.nextElementSibling;
-
-    // Check if the main search query has changed
-    const mainSearchQuery = searchBar.value.trim().toLowerCase();
-
-    if (mainSearchQuery !== this.lastMainSearchQuery) {
-      // Main search query has changed, reset the dropdown based on the new query
-      this.resetDropdown(category);
-      this.lastMainSearchQuery = mainSearchQuery;
-    }
-
-    const filteredOriginalTags = this.filterTagsByCategory(
-      dropdownContent.querySelectorAll("li"),
-      category
-    );
-
-    dropdownContent.innerHTML = "";
-
-    if (inputValue !== "") {
-      filteredOriginalTags.forEach((tag) => {
-        const tagText = tag.textContent.trim().toLowerCase();
-        if (tagText.includes(inputValue)) {
-          const newTag = this.createTagElement(tag.textContent, category);
-          dropdownContent.appendChild(newTag);
-        }
-      });
-    }
-
-    this.toggleCloseButtonVisibility(inputField, inputValue);
-
-    // Call the updateSearchResults function directly
-    this.updateSearchResults();
-  }
-
-  // iconClear in main search bar
-  clearSearchBar() {
-    searchBar.value = ""; // Clear the search bar
-    this.selectedTags = {
-      ingredients: [],
-      appliance: [],
-      ustensils: [],
-    };
-
-    // Reset the advanced search fields
-    const searchInputs = document.querySelectorAll(
-      ".dropdownHeaderInput input"
-    );
-    searchInputs.forEach((input) => {
-      input.value = "";
-      input.nextElementSibling.style.display = "none"; // Hide the closeButton
-    });
-
-    // Update the dropdown options to display all tags
-    const allTags = this.collectAllTags();
-    this.updateDropdownOptions("ingredients", allTags.ingredients);
-    this.updateDropdownOptions("appliance", allTags.appliance);
-    this.updateDropdownOptions("ustensils", allTags.ustensils);
-
-    // Update the search results
-    this.updateSearchResults();
-  }
-
-  //#################################################### on init DROPDOWN ###################################################
-  // onClick event on dropdown arrow icon
-  onClickArrow(e) {
-    const element = e.target;
-    const parent = element.parentElement;
-    if (parent) {
-      if (parent.classList.contains("open")) {
-        parent.classList.remove("open");
-      } else {
-        parent.classList.add("open");
-      }
-    }
-  }
-
-  // Initialize dropdown header listeners
-  initDropdownHeaderListeners() {
-    const arrows = document.querySelectorAll(".fa-angle-down");
-    arrows.forEach((arrow) => {
-      arrow.addEventListener("click", this.onClickArrow.bind(this));
-    });
-
-    this.dropdownHeaders.forEach((header) => {
-      header.addEventListener("click", () => {
-        const category = header.getAttribute("data-category");
-        this.toggleDropdown(category);
-      });
-    });
-  }
-
-  // Function to toggle the visibility of a dropdown category
-  toggleDropdown(category) {
-    const dropdownHeader = document.querySelector(
-      `.dropdownHeader[data-category="${category}"]`
-    );
-    if (dropdownHeader) {
-      const dropdownContent = dropdownHeader.nextElementSibling;
-      if (dropdownContent) {
-        if (dropdownContent.classList.contains("active")) {
-          // If the dropdown content is currently open, close it
-          dropdownContent.classList.remove("active");
-        } else {
-          // If the dropdown content is currently closed, open it
-          dropdownContent.classList.add("active");
-        }
-      }
-      this.closeAllDropdowns(category);
-    }
-  }
-
-  // Close all dropdowns except the specified category
-  closeAllDropdowns(exceptCategory = null) {
-    const dropdownHeaders = document.querySelectorAll(".dropdownHeader");
-    dropdownHeaders.forEach((header) => {
-      const dropdownContent = header.nextElementSibling;
-      if (dropdownContent) {
-        if (
-          exceptCategory === null ||
-          header.getAttribute("data-category") !== exceptCategory
-        ) {
-          dropdownContent.classList.remove("active");
-        }
-      }
-    });
-  }
-
-  //############################################# on init ADVANCED SEARCH ######################################################
-
-  // Check if the advanced search is empty
-  isAdvancedSearchEmpty() {
-    for (const key in this.selectedTags) {
-      if (
-        Array.isArray(this.selectedTags[key]) &&
-        this.selectedTags[key].length > 0
-      ) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  // Initialize search input fields
-  initSearchFields() {
-    const searchInputs = document.querySelectorAll(".dropdownHeaderInput");
-
-    // Initialize the debounced function
-    const debouncedUpdateSearchResults = this.debounce(() => {
-      this.updateSearchResults(); // Call the updateSearchResults directly
-    }, 300); // Adjust the debounce delay as needed
-
-    searchInputs.forEach((input) => {
-      input.addEventListener("input", () => {
-        // Call the debounced function to update the search results
-        debouncedUpdateSearchResults();
-      });
-    });
-  }
-
-  // Get the input field inside a dropdown
-  getDropdownInputField(dropdownContent) {
-    return dropdownContent.parentElement.querySelector(
-      ".dropdownHeaderInput input"
-    );
-  }
-
-  // Setup event listeners for the input field
-  setupInputFieldListeners(inputField, category) {
-    inputField.addEventListener("click", () => {
-      this.activeDropdown = category;
-    });
-
-    inputField.addEventListener("input", () => {
-      this.handleInputFieldInput(inputField, category);
-    });
-  }
-
-  //####################################### events in .searchInput field (advanced search) ########################################
-  // Setup event listeners for the close button (input in .searchInput)
-  setupCloseButtonListeners(inputField, category) {
-    const closeButton = inputField.nextElementSibling;
-    closeButton.addEventListener("click", () => {
-      this.handleCloseButtonClick(inputField, category);
-    });
-  }
-
-  toggleCloseButtonVisibility(inputField, inputValue) {
-    const closeButton = inputField.nextElementSibling;
-    closeButton.style.display = inputValue !== "" ? "block" : "none";
-  }
-
-  // Handle close button click
-  handleCloseButtonClick(inputField, category) {
-    inputField.value = "";
-    inputField.nextElementSibling.style.display = "none";
-    const tag = inputField.value.trim().toLowerCase();
-    this.removeSelectedTag(category, tag);
-    this.updateAdvancedSearchFields(); // Update the dropdown options
-    this.updateSearchResults();
-    this.checkTagsContainerEmpty();
-  }
-
-  // Check if the tags container is empty
-  checkTagsContainerEmpty() {
-    const tagsContainer = document.getElementById("tagsContainer");
-    const selectedTags = tagsContainer.querySelectorAll(".selectedTag");
-
-    if (selectedTags.length === 0) {
-      // Tags container is empty
-    }
-  }
-
-  // Reset the dropdown with tags
-  resetDropdown(category) {
-    const dropdownContent = document.querySelector(
-      `.dropdownContent[data-category="${category}"]`
-    );
-
-    if (dropdownContent) {
-      // Get the filtered tags from the currently displayed recipes
-      const filteredTags = this.collectTagsFromRecipes(category);
-      this.clearDropdownContent(dropdownContent);
-
-      // Add the filtered tags back to the dropdown
-      this.addFilteredTagsToDropdown(dropdownContent, filteredTags, category);
-    }
-  }
-
-  // Remove a selected tag
-  removeSelectedTag(category, tag) {
-    if (this.selectedTags[category]) {
-      const index = this.selectedTags[category].indexOf(tag);
-      if (index !== -1) {
-        this.selectedTags[category].splice(index, 1);
-      }
-    }
-  }
-
-  //############################################### on updated tags in DROPDOWN #####################################################
+  //############################ on updating dropdowns based on the input in the main search ################################
   // Create a new tag element
   createTagElement(tagText, category) {
     const newTag = document.createElement("li");
@@ -443,7 +118,7 @@ class AdvancedSearch {
     return newTag;
   }
 
-  // Update dropdown options
+  // Update dropdown options based on input in the main search ################################
   updateDropdownOptions(category, options) {
     const dropdownContent = document.querySelector(
       `.dropdownHeader[data-category="${category}"] .dropdownContent`
@@ -461,6 +136,29 @@ class AdvancedSearch {
     } else {
       console.error(`Dropdown content not found for category: ${category}`);
     }
+  }
+
+  // method to filter dropdown options based on input value
+  filterDropdownOptions(category, inputValue) {
+    console.log("Category:", category);
+    console.log("Input Value:", inputValue);
+
+    // Check if dropdownContent exists
+    const dropdownContent = document.querySelector(
+      `.dropdownHeader[data-category="${category}"] .dropdownContent`
+    );
+
+    console.log("Dropdown Content:", dropdownContent);
+
+    // Get all available options for the given category
+    const allOptions = this.collectTagsFromRecipes(category);
+
+    // Filter options that contain the input value
+    const filteredOptions = allOptions.filter((option) =>
+      option.includes(inputValue)
+    );
+
+    return filteredOptions;
   }
 
   // Clear the content of a dropdown
@@ -560,8 +258,249 @@ class AdvancedSearch {
     this.updateDropdownOptions("appliance", appliance);
     this.updateDropdownOptions("ustensils", ustensils);
   }
+  //#################################################### on init DROPDOWN ###################################################
+  // onClick event on dropdown arrow icon
+  onClickArrow(e) {
+    const element = e.target;
+    const parent = element.parentElement;
+    if (parent) {
+      if (parent.classList.contains("open")) {
+        parent.classList.remove("open");
+      } else {
+        parent.classList.add("open");
+      }
+    }
+  }
 
-  //############################################# on events on tags in dropdown ##############################################
+  // Initialize dropdown header listeners
+  initDropdownHeaderListeners() {
+    const arrows = document.querySelectorAll(".fa-angle-down");
+    arrows.forEach((arrow) => {
+      arrow.addEventListener("click", this.onClickArrow.bind(this));
+    });
+
+    this.dropdownHeaders.forEach((header) => {
+      header.addEventListener("click", () => {
+        const category = header.getAttribute("data-category");
+        this.toggleDropdown(category);
+      });
+    });
+  }
+
+  // Function to toggle the visibility of a dropdown category
+  toggleDropdown(category) {
+    const dropdownHeader = document.querySelector(
+      `.dropdownHeader[data-category="${category}"]`
+    );
+    if (dropdownHeader) {
+      const dropdownContent = dropdownHeader.nextElementSibling;
+      if (dropdownContent) {
+        if (dropdownContent.classList.contains("active")) {
+          // If the dropdown content is currently open, close it
+          dropdownContent.classList.remove("active");
+        } else {
+          // If the dropdown content is currently closed, open it
+          dropdownContent.classList.add("active");
+        }
+      }
+      this.closeAllDropdowns(category);
+    }
+  }
+
+  // Close all dropdowns except the specified category
+  closeAllDropdowns(exceptCategory = null) {
+    const dropdownHeaders = document.querySelectorAll(".dropdownHeader");
+    dropdownHeaders.forEach((header) => {
+      const dropdownContent = header.nextElementSibling;
+      if (dropdownContent) {
+        if (
+          exceptCategory === null ||
+          header.getAttribute("data-category") !== exceptCategory
+        ) {
+          dropdownContent.classList.remove("active");
+        }
+      }
+    });
+  }
+  //############################################# on inputting in ADVANCED SEARCH ######################################################
+
+  // Check if the advanced search is empty
+  isAdvancedSearchEmpty() {
+    for (const key in this.selectedTags) {
+      if (
+        Array.isArray(this.selectedTags[key]) &&
+        this.selectedTags[key].length > 0
+      ) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // Initialize search input field in a dropdown in the advanced search
+  initSearchFields() {
+    const searchInputs = document.querySelectorAll(".dropdownHeaderInput");
+
+    // Initialize the debounced function
+    const debouncedUpdateSearchResults = this.debounce(() => {
+      this.updateSearchResults(); // Call the updateSearchResults directly
+    }, 300);
+
+    searchInputs.forEach((input) => {
+      const category = input.parentElement.getAttribute("data-category"); // Get the category from the parent element
+      input.addEventListener("input", () => {
+        // Call the debounced function to update the search results
+        debouncedUpdateSearchResults();
+      });
+    });
+  }
+
+  // Get the input field inside a dropdown
+  getDropdownInputField(dropdownContent) {
+    return dropdownContent.parentElement.querySelector(
+      ".dropdownHeaderInput input"
+    );
+  }
+
+  // Setup event listeners for the input field
+  setupInputFieldListeners(inputField, category) {
+    inputField.addEventListener("click", () => {
+      this.activeDropdown = category;
+    });
+
+    inputField.addEventListener("input", () => {
+      this.handleInputFieldInput(inputField, category);
+    });
+  }
+
+  // handleInputFieldInput method
+  handleInputFieldInput(inputField, category) {
+    const inputValue = inputField.value.trim().toLowerCase();
+    const dropdownContent = inputField.parentElement.nextElementSibling;
+
+    // Check if the main search query has changed
+    const mainSearchQuery = searchBar.value.trim().toLowerCase();
+
+    if (mainSearchQuery !== this.lastMainSearchQuery) {
+      // Main search query has changed, reset the dropdown based on the new query
+      this.resetDropdown(category);
+      this.lastMainSearchQuery = mainSearchQuery;
+    }
+
+    const filteredOptions = this.filterDropdownOptions(category, inputValue);
+
+    dropdownContent.innerHTML = "";
+
+    if (inputValue !== "") {
+      filteredOptions.forEach((option) => {
+        const newTag = this.createTagElement(option, category);
+        dropdownContent.appendChild(newTag);
+      });
+    }
+
+    this.toggleCloseButtonVisibility(inputField, inputValue);
+  }
+
+  // Update dropdown options based on the input within each dropdown
+  updateLocalDropdownOptions(category) {
+    const dropdownContent = document.querySelector(
+      `.dropdownContent[data-category="${category}"]`
+    );
+
+    if (dropdownContent) {
+      const allOptions = this.collectTagsFromRecipes(category);
+      const inputField = this.getDropdownInputField(dropdownContent);
+      const inputValue = inputField.value.trim().toLowerCase();
+      const mainSearchQuery = searchBar.value.trim().toLowerCase();
+
+      if (inputValue === "") {
+        // If the input in the dropdown is empty, check the main search input
+        if (mainSearchQuery === "") {
+          // Both inputs are empty, show all available options
+          this.resetDropdown(category);
+        } else {
+          // Main search input has a value, filter dropdown based on it
+          this.resetDropdownToFilteredOptions(
+            dropdownContent,
+            allOptions,
+            mainSearchQuery,
+            category
+          );
+        }
+      } else {
+        // Input field in the dropdown is not empty, filter dropdown based on it
+        this.updateDropdownOptions(category, options);
+      }
+
+      // Update the last input value
+      inputField.dataset.lastValue = inputValue;
+    } else {
+      console.error(`Dropdown content not found for category: ${category}`);
+    }
+  }
+
+  //####################################### events in .searchInput field (advanced search) ########################################
+  // Setup event listeners for the close button (input in .searchInput)
+  setupCloseButtonListeners(inputField, category) {
+    const closeButton = inputField.nextElementSibling;
+    closeButton.addEventListener("click", () => {
+      this.handleCloseButtonClick(inputField, category);
+    });
+  }
+
+  toggleCloseButtonVisibility(inputField, inputValue) {
+    const closeButton = inputField.nextElementSibling;
+    closeButton.style.display = inputValue !== "" ? "block" : "none";
+  }
+
+  // Handle close button click
+  handleCloseButtonClick(inputField, category) {
+    inputField.value = "";
+    inputField.nextElementSibling.style.display = "none";
+    const tag = inputField.value.trim().toLowerCase();
+    this.removeSelectedTag(category, tag);
+    this.updateAdvancedSearchFields(); // Update the dropdown options
+    this.updateSearchResults();
+    this.checkTagsContainerEmpty();
+  }
+
+  // Check if the tags container is empty
+  checkTagsContainerEmpty() {
+    const tagsContainer = document.getElementById("tagsContainer");
+    const selectedTags = tagsContainer.querySelectorAll(".selectedTag");
+
+    if (selectedTags.length === 0) {
+      // Tags container is empty
+    }
+  }
+
+  // Reset the dropdown with tags
+  resetDropdown(category) {
+    const dropdownContent = document.querySelector(
+      `.dropdownContent[data-category="${category}"]`
+    );
+
+    if (dropdownContent) {
+      // Get the filtered tags from the currently displayed recipes
+      const filteredTags = this.collectTagsFromRecipes(category);
+      this.clearDropdownContent(dropdownContent);
+
+      // Add the filtered tags back to the dropdown
+      this.addFilteredTagsToDropdown(dropdownContent, filteredTags, category);
+    }
+  }
+
+  // Remove a selected tag
+  removeSelectedTag(category, tag) {
+    if (this.selectedTags[category]) {
+      const index = this.selectedTags[category].indexOf(tag);
+      if (index !== -1) {
+        this.selectedTags[category].splice(index, 1);
+      }
+    }
+  }
+
+  //######################################################## on TAGs ############################################################
   // Initialize event listeners for tag selection and display in dropdownContent
   initTagSelectionListeners() {
     const dropdownContents = document.querySelectorAll(".dropdownContent");
@@ -614,6 +553,9 @@ class AdvancedSearch {
     const tagsContainer = document.getElementById("tagsContainer");
     tagsContainer.innerHTML = "";
 
+    // Create a map to store references to the selected tags and their corresponding li elements
+    const selectedTagMap = new Map();
+
     // Loop through selected tags and create elements for them
     for (const category in this.selectedTags) {
       this.selectedTags[category].forEach((tag) => {
@@ -652,10 +594,18 @@ class AdvancedSearch {
           this.onRemoveTag(category, tag);
           this.closeAllDropdowns(category);
 
+          const dropdownContent = document.querySelector(
+            `.dropdownHeader[data-category="${category}"] .dropdownContent`
+          );
+
           // Get the related <li> element in the dropdown
           const dropdownOption = dropdownContent.querySelector(
             `li[data-category="${category}"][data-tag="${tag}"]`
           );
+
+          console.log("=>>>>>>>>>> category", category);
+          console.log("=>>>>>>>>>> tag", tag);
+          console.log("=>>>>>>>>>> dropdownOption", dropdownOption);
 
           // Check if the <li> element exists and has stored initial styles
           if (dropdownOption && dropdownOption.dataset.initialStyles) {
@@ -666,6 +616,11 @@ class AdvancedSearch {
             for (const prop in initialStyles) {
               dropdownOption.style[prop] = initialStyles[prop];
             }
+          }
+
+          // Unselect the corresponding li in the dropdown
+          if (dropdownOption) {
+            dropdownOption.classList.remove("selected");
           }
 
           this.updateTagDisplay();
@@ -692,9 +647,47 @@ class AdvancedSearch {
           }
         }
 
+        // Append the tagElement to the tagsContainer
         tagsContainer.appendChild(tagElement);
+
+        // Store the reference to the selected tag and corresponding li
+        selectedTagMap.set(tagElement, tag);
       });
     }
+
+    // Set up an event listener on the tagsContainer to handle tag removal and unselection in the dropdown
+    tagsContainer.addEventListener("click", (event) => {
+      const clickedTagElement = event.target.closest(".selectedTag");
+      if (clickedTagElement) {
+        const category = clickedTagElement.getAttribute("data-category");
+        const tag = selectedTagMap.get(clickedTagElement);
+
+        // Debugging: Output category, tag, and selectedTagMap
+        console.log("=>>>>>>>>>> category", category);
+        console.log("=>>>>>>>>>> tag", tag);
+        console.log("=>>>>>>>>>> selectedTagMap", selectedTagMap);
+
+        // Remove the tag from the selected tags
+        this.onRemoveTag(category, tag);
+        this.closeAllDropdowns(category);
+        this.updateTagDisplay();
+        this.updateSearchResults();
+
+        // Unselect the corresponding li in the dropdown
+        const dropdownContent = document.querySelector(
+          `.dropdownHeader[data-category="${category}"] .dropdownContent`
+        );
+        if (dropdownContent) {
+          const dropdownOption = dropdownContent.querySelector(
+            `li[data-category="${category}"][data-tag="${tag}"]`
+          );
+          if (dropdownOption) {
+            dropdownOption.classList.remove("selected");
+          }
+        }
+      }
+    });
+
     this.updateSearchResults();
   }
 
@@ -747,7 +740,6 @@ class AdvancedSearch {
       }
     }
   }
-
   //########################## on events on tags selected from options in dropdowns & #tagsContainer #############################
   // Check if a tag is selected
   isTagSelected(category, tag) {
@@ -821,40 +813,173 @@ class AdvancedSearch {
     }
   }
 
-  //###################################### collect ARRAYS OF DROPDOWNS' OPTIONS ##################################################
-  // collect all tags from all recipes
-  collectAllTags() {
-    const allTags = {
+  // iconClear next to tags
+  clearSearchBar() {
+    searchBar.value = ""; // Clear the search bar
+    this.selectedTags = {
       ingredients: [],
       appliance: [],
       ustensils: [],
     };
 
+    // Reset the advanced search fields
+    searchInputs.forEach((input) => {
+      input.value = "";
+      input.nextElementSibling.style.display = "none"; // Hide the closeButton
+    });
+
+    // Update the dropdown options to display all tags
+    const allTags = this.collectAllTags();
+    this.updateDropdownOptions("ingredients", allTags.ingredients);
+    this.updateDropdownOptions("appliance", allTags.appliance);
+    this.updateDropdownOptions("ustensils", allTags.ustensils);
+
+    // Update the search results
+    this.updateSearchResults();
+  }
+
+  //############################################## on combined search & RESULTS ####################################################
+  // Update the search results
+  updateSearchResults() {
+    console.log("Updating search results...");
+    const mainSearchQuery = this.getMainSearchQuery();
+    const advancedSearchQuery = this.getAdvancedSearchQuery();
+
+    // Reset search fields if both queries are empty
+    if (this.isSearchEmpty(mainSearchQuery, advancedSearchQuery)) {
+      this.resetSearchFields();
+      return;
+    }
+
+    const combinedSearchCriteria = this.combineSearchCriteria(
+      mainSearchQuery,
+      advancedSearchQuery
+    );
+    const filteredRecipes = this.filterRecipes(combinedSearchCriteria);
+    this.displayFilteredRecipes(filteredRecipes);
+    console.log("Search results updated.");
+  }
+
+  // Get the main search query
+  getMainSearchQuery() {
+    return searchBar.value.trim().toLowerCase();
+  }
+
+  // Get the advanced search query (selected tags)
+  getAdvancedSearchQuery() {
+    const selectedTags = this.getSelectedTags();
+    // Remove empty arrays and undefined values
+    for (const key in selectedTags) {
+      if (Array.isArray(selectedTags[key]) && selectedTags[key].length === 0) {
+        delete selectedTags[key];
+      }
+    }
+    return selectedTags;
+  }
+
+  // Check if both main and advanced search queries are empty
+  isSearchEmpty(mainQuery, advancedQuery) {
+    return (
+      mainQuery.trim() === "" &&
+      Object.values(advancedQuery).every((tags) => tags.length === 0)
+    );
+  }
+
+  // Reset search fields and return to the initial state
+  resetSearchFields() {
+    this.initSearchFields();
+  }
+
+  // Combine the main search query and advanced search tags
+  combineSearchCriteria(mainQuery, advancedQuery) {
+    return {
+      mainSearchQuery: mainQuery,
+      ...advancedQuery,
+    };
+  }
+
+  // Filter recipes based on search criteria
+  filterRecipes(searchCriteria) {
+    return recipes.filter((recipe) => {
+      const matchingTags = this.getAllMatchingTags(recipe);
+
+      const queryWords = searchCriteria.mainSearchQuery
+        .toLowerCase()
+        .split(" ");
+      const hasMatchingTags = queryWords.every((word) =>
+        matchingTags.some((tag) => tag.includes(word))
+      );
+
+      const selectedTags = [].concat(
+        ...Object.values(searchCriteria).filter(Array.isArray)
+      );
+      const hasMatchingSelectedTags = selectedTags.every((tag) =>
+        matchingTags.includes(tag.toLowerCase())
+      );
+
+      return hasMatchingTags && hasMatchingSelectedTags;
+    });
+  }
+
+  // Get all matching tags for a recipe
+  getAllMatchingTags(recipe) {
+    const ingredientTags = recipe.ingredients.map((ingredient) =>
+      ingredient.ingredient.toLowerCase()
+    );
+    const applianceTag = recipe.appliance.toLowerCase();
+    const ustensilTags = recipe.ustensils.map((ustensil) =>
+      ustensil.toLowerCase()
+    );
+    const descriptionTag = recipe.description.toLowerCase();
+
+    return [
+      ...ingredientTags,
+      applianceTag,
+      ...ustensilTags,
+      recipe.name,
+      descriptionTag,
+    ];
+  }
+
+  // Display filtered recipes
+  displayFilteredRecipes(filteredRecipes) {
+    this.recipeCardContainer.innerHTML = "";
+    filteredRecipes.forEach((recipe) => {
+      const recipeCard = this.cards.createCard(recipe);
+      this.recipeCardContainer.appendChild(recipeCard);
+    });
+    updateListedRecipesCount(this.recipeCardContainer);
+  }
+
+  //###################################### collect ARRAYS OF DROPDOWNS' OPTIONS ##################################################
+  // Collect all tags from all recipes
+  collectAllTags() {
+    const allTags = {
+      ingredients: new Set(),
+      appliance: new Set(),
+      ustensils: new Set(),
+    };
+
     recipes.forEach((recipe) => {
       // Collect ingredients
       recipe.ingredients.forEach((ingredient) => {
-        const ingredientName = ingredient.ingredient.toLowerCase();
-        if (!allTags.ingredients.includes(ingredientName)) {
-          allTags.ingredients.push(ingredientName);
-        }
+        allTags.ingredients.add(ingredient.ingredient.toLowerCase());
       });
 
       // Collect appliance
-      const applianceName = recipe.appliance.toLowerCase();
-      if (!allTags.appliance.includes(applianceName)) {
-        allTags.appliance.push(applianceName);
-      }
+      allTags.appliance.add(recipe.appliance.toLowerCase());
 
       // Collect ustensils
       recipe.ustensils.forEach((ustensil) => {
-        const ustensilName = ustensil.toLowerCase();
-        if (!allTags.ustensils.includes(ustensilName)) {
-          allTags.ustensils.push(ustensilName);
-        }
+        allTags.ustensils.add(ustensil.toLowerCase());
       });
     });
 
-    return allTags;
+    return {
+      ingredients: [...allTags.ingredients],
+      appliance: [...allTags.appliance],
+      ustensils: [...allTags.ustensils],
+    };
   }
 
   // Collect all unique ingredients from recipes
@@ -883,5 +1008,4 @@ class AdvancedSearch {
     return [...new Set(allUstensils)];
   }
 }
-
 export default AdvancedSearch;

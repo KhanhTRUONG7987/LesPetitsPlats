@@ -2,7 +2,7 @@ import recipes from "../data/recipes.js";
 
 class Cards {
   constructor() {
-    this.recipes = recipes;
+    this.recipes = recipes; 
     this.init();
   }
 
@@ -125,6 +125,17 @@ class Cards {
 
   // method to display recipes based on a list
   displayRecipes(recipeList) {
+    const recipeCardContainer = document.getElementById("recipeCardContainer");
+    recipeCardContainer.innerHTML = "";
+
+    recipeList.forEach((recipeId) => {
+      const recipeCard = this.createCard(recipeId);
+      recipeCardContainer.appendChild(recipeCard);
+    });
+  }
+
+  // updateCards method
+  updateCards(recipeList) {
     const recipeCardContainer = document.getElementById("recipeCardContainer");
     recipeCardContainer.innerHTML = "";
 

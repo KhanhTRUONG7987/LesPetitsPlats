@@ -1,5 +1,5 @@
 import AdvancedSearch from "./tags.js";
-import { performSearch } from "../utils/search.js";
+import { performSearch } from "../utils/performMainSearch.js";
 import Cards from "./cards.js";
 import { updateListedRecipesCount } from "../utils/countListedCards.js";
 
