@@ -1,0 +1,16 @@
+{
+  "name": "lespetitsplats",
+  "version": "1.0.0",
+  "description": "Projet 7: Développez un algorithme de recherche en JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "benchmark": "^2.1.4"
+  }
+}
