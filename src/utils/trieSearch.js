@@ -48,6 +48,7 @@ class Trie {
 // Initialize the trie and perform a search
 export function performTrieBasedSearch(query) {
   const trie = new Trie();
+  const recipeCardContainer = document.getElementById("recipeCardContainer");
 
   // Build the trie with recipe names
   for (const recipe of recipes) {
@@ -69,6 +70,21 @@ export function performTrieBasedSearch(query) {
 
   // Log a message indicating that this is from algo-2
   console.log("algo-2:", uniqueMatchingRecipes);
+
+  if (query.length < 3) {
+    // If the query is too short, do not clear previous results
+    return recipes;
+  } else {
+    // Clear previous results if the query is long enough
+    recipeCardContainer.innerHTML = "";
+  }
+
+  if (uniqueMatchingRecipes.length === 0) {
+    const noResultsMessage = document.createElement("p");
+    noResultsMessage.textContent = `No recipes found for "${query}"`;
+    noResultsMessage.classList.add("no-results-message");
+    recipeCardContainer.appendChild(noResultsMessage);
+  }
 
   return uniqueMatchingRecipes;
 }

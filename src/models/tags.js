@@ -89,13 +89,14 @@ class AdvancedSearch {
   }
 
   addCloseButtonListeners() {
-    const closeButtons = document.querySelectorAll(
-      ".dropdownHeaderInput .closeButton"
-    );
+    const closeButtons = document.querySelectorAll(".closeButton");
 
     closeButtons.forEach((closeButton) => {
-      closeButton.addEventListener("click", () => {
-        this.handleCloseButtonClick(closeButton);
+      closeButton.addEventListener("click", (event) => {
+        const category = closeButton.getAttribute("data-category");
+        const inputField = closeButton.parentElement.querySelector("input");
+
+        this.handleCloseButtonClick(inputField, category);
       });
     });
   }
@@ -115,18 +116,18 @@ class AdvancedSearch {
   }
 
   setupInputListeners() {
-    for (const input of searchInputs) {
-      input.addEventListener("input", () => {
-        const category = input
-          .closest(".dropdownHeader")
-          .getAttribute("data-category");
-        if (category) {
-          this.updateLocalDropdownOptions(category);
-        } else {
-          console.error("Category not found for input element.");
-        }
-      });
-    }
+    // for (const input of searchInputs) {
+    //   input.addEventListener("input", () => {
+    //     const category = input
+    //       .closest(".dropdownHeader")
+    //       .getAttribute("data-category");
+    //     if (category) {
+    //       this.updateLocalDropdownOptions(category);
+    //     } else {
+    //       console.error("Category not found for input element.");
+    //     }
+    //   });
+    // }
   }
 
   //############################ on updating dropdowns based on the input in the main search ################################
@@ -151,6 +152,7 @@ class AdvancedSearch {
         const li = document.createElement("li");
         li.textContent = option;
         li.dataset.category = category;
+        li.dataset.tag = option;
         dropdownContent.appendChild(li);
       });
     } else {
@@ -174,10 +176,12 @@ class AdvancedSearch {
     const allOptions = this.collectTagsFromRecipes(category);
 
     // Filter options that contain the input value
-    const filteredOptions = allOptions.filter((option) =>
-      option.includes(inputValue)
-    );
+    const filteredOptions =
+      inputValue.length > 0
+        ? allOptions.filter((option) => option.includes(inputValue))
+        : allOptions;
 
+    console.log("FILTERED OPTIONS", filteredOptions);
     return filteredOptions;
   }
 
@@ -358,6 +362,7 @@ class AdvancedSearch {
   }
 
   // Initialize search input field in a dropdown in the advanced search
+  // TODO: 
   initSearchFields() {
     const searchInputs = document.querySelectorAll(".dropdownHeaderInput");
 
@@ -407,16 +412,16 @@ class AdvancedSearch {
       this.lastMainSearchQuery = mainSearchQuery;
     }
 
+    console.log("handleInputFieldInput", category, inputValue);
+
     const filteredOptions = this.filterDropdownOptions(category, inputValue);
 
     dropdownContent.innerHTML = "";
 
-    if (inputValue !== "") {
-      filteredOptions.forEach((option) => {
-        const newTag = this.createTagElement(option, category);
-        dropdownContent.appendChild(newTag);
-      });
-    }
+    filteredOptions.forEach((option) => {
+      const newTag = this.createTagElement(option, category);
+      dropdownContent.appendChild(newTag);
+    });
 
     this.toggleCloseButtonVisibility(inputField, inputValue);
   }
@@ -591,9 +596,6 @@ class AdvancedSearch {
     const tagsContainer = document.getElementById("tagsContainer");
     tagsContainer.innerHTML = "";
 
-    // Create a map to store references to the selected tags and their corresponding li elements
-    const selectedTagMap = new Map();
-
     // Loop through selected tags and create elements for them
     for (const category in this.selectedTags) {
       this.selectedTags[category].forEach((tag) => {
@@ -606,7 +608,7 @@ class AdvancedSearch {
         // TODO: Add "Remove Tag" button
         const closeButton = document.createElement("span");
         closeButton.classList.add("closeButton");
-        closeButton.textContent = "x";
+        closeButton.innerHTML = '<i class="fas fa-times"></i>';
         tagElement.appendChild(closeButton);
 
         // Highlight selected tags
@@ -665,6 +667,8 @@ class AdvancedSearch {
           this.updateSearchResults();
         });
 
+        console.log("TEST");
+
         // Highlight selected tags
         if (this.isTagSelected(category, tag)) {
           tagElement.classList.add("selected");
@@ -687,23 +691,21 @@ class AdvancedSearch {
 
         // Append the tagElement to the tagsContainer
         tagsContainer.appendChild(tagElement);
-
-        // Store the reference to the selected tag and corresponding li
-        selectedTagMap.set(tagElement, tag);
       });
     }
 
     // Set up an event listener on the tagsContainer to handle tag removal and unselection in the dropdown
     tagsContainer.addEventListener("click", (event) => {
+      ///
       const clickedTagElement = event.target.closest(".selectedTag");
       if (clickedTagElement) {
         const category = clickedTagElement.getAttribute("data-category");
-        const tag = selectedTagMap.get(clickedTagElement);
+        const tag = clickedTagElement.dataset.tag;
 
-        // Debugging: Output category, tag, and selectedTagMap
+        // Debugging: Output category, tag
         console.log("=>>>>>>>>>> category", category);
         console.log("=>>>>>>>>>> tag", tag);
-        console.log("=>>>>>>>>>> selectedTagMap", selectedTagMap);
+    
 
         // Remove the tag from the selected tags
         this.onRemoveTag(category, tag);
@@ -1056,3 +1058,4 @@ class AdvancedSearch {
   }
 }
 export default AdvancedSearch;
+

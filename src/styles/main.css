@@ -25,9 +25,10 @@ img {
 }
 
 .wrapper {
-  max-width: 1440px;
+  max-width: 1340px;
   /* margin: 0 2em 2em 2em; */
-  margin: 0 5em 0 5em;
+  /* margin: 0 5em 0 5em; */
+  margin: 0 auto;
 }
 
 :root {
@@ -407,7 +408,6 @@ p.recipe-description {
 }
 
 .dropdownHeaderInput .searchInput {
-  position: absolute;
   width: 100%;
   right: 0.01em;
   left: 0.03em;
@@ -416,7 +416,7 @@ p.recipe-description {
 /* Style the close button */
 .dropdownHeaderInput .closeButton {
   position: absolute;
-  top: -0.035em;
+  top: -0.000009005em;
   right: 2.5em;
   color: var(--light-gray);
   cursor: pointer;
@@ -503,20 +503,22 @@ p.recipe-description {
 }
 
 .selectedTag .closeButton {
-  margin-left: 1em;
+  margin-left: 3.5em;
   cursor: pointer;
   color: var(--black);
+  font-size: large;
 }
 
 .selectedTag.selected {
   background-color: var(--yellow);
   color: var(--black);
-  border-radius: 0.3em;
-  padding: 0.2em 0.5em;
-  margin: 0.2em;
+  border-radius: 0.8em;
+  padding: 0.85em;
+  margin: 0em 0.3em 2.8em 0;
   display: inline-block;
   align-items: center;
   font-size: 1em;
+  font-weight:200;
   cursor: pointer;
 }
 
