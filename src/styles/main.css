@@ -542,10 +542,11 @@ p.recipe-description {
   justify-content: center;
   align-items: center;
   opacity: 0; 
-  transition: opacity 0.3s; /* a transition for smooth visibility */
-  position: absolute; 
-  right: 1em; 
-  top: 0.5em; 
+  transition: opacity 0.3s;
+  position: absolute;
+  right: 1em;
+  top: 0.5em;
+  cursor: pointer;
 }
 
 /* Style the close button when hovering over an option */

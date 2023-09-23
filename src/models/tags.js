@@ -23,6 +23,7 @@ class AdvancedSearch {
     this.cards = new Cards();
     this.tagsContainer = document.getElementById("tagsContainer");
     this.activeDropdown = null;
+    this.updateNeeded = false;
 
     this.debounce = function (func, wait) {
       let timeout;
@@ -176,17 +177,10 @@ class AdvancedSearch {
 
   // Handle close button next to each option click
   handleCloseButtonOfOptionClick(option, category) {
-    console.log("Option:", option);
-    console.log("Category:", category);
-
     const tagText = option.dataset.tag;
-    console.log("Tag Text:", tagText);
-
-    console.log("Option Before:", option);
 
     // Find the parent dropdownHeader element
     const dropdownHeader = option.closest(".dropdownHeader");
-    console.log("Dropdown Header:", dropdownHeader);
 
     if (!dropdownHeader) {
       console.error(`Dropdown header not found for category: ${category}`);
@@ -207,8 +201,6 @@ class AdvancedSearch {
       this.onRemoveTag(category, tagText);
     }
 
-    console.log("Close button clicked. Updating search results...");
-
     // Remove and re-add the closeButtonOfEachOption
     const closeButtonOfEachOption = option.querySelector(
       ".closeButtonOfEachOption"
@@ -222,6 +214,11 @@ class AdvancedSearch {
       newCloseButtonOfEachOption.classList.add("closeButtonOfEachOption");
       newCloseButtonOfEachOption.innerHTML = '<i class="fas fa-times"></i>';
       option.appendChild(newCloseButtonOfEachOption);
+
+      // Add an event listener to handle option unselection and tag removal
+      newCloseButtonOfEachOption.addEventListener("click", () => {
+        this.handleCloseButtonOfOptionClick(option, category);
+      });
     }
 
     // Get the list of selected options after the removal
@@ -479,7 +476,6 @@ class AdvancedSearch {
   }
 
   // Initialize search input field in a dropdown in the advanced search
-  // TODO:
   initSearchFields() {
     const searchInputs = document.querySelectorAll(".dropdownHeaderInput");
 
@@ -688,7 +684,7 @@ class AdvancedSearch {
 
   // clear #tagsContainer
   clearTagsContainer() {
-    this.tagsContainer.innerHTML = ""; // Clear the #tagsContainer
+    this.tagsContainer.innerHTML = "";
   }
 
   // Update the display of selected tags
@@ -900,7 +896,7 @@ class AdvancedSearch {
     }
 
     this.closeAllDropdowns(category);
-    this.updateSearchResults();
+    // this.updateSearchResults();
   }
 
   // onRemoveTag method
@@ -927,13 +923,13 @@ class AdvancedSearch {
       this.selectedTagsElements[category] = [];
 
       this.updateTagDisplay();
-      this.updateSearchResults();
+      // this.updateSearchResults();
     }
   }
 
   // iconClear next to tags
   clearSearchBar() {
-    searchBar.value = ""; // Clear the search bar
+    searchBar.value = "";
     this.selectedTags = {
       ingredients: [],
       appliance: [],
@@ -966,9 +962,13 @@ class AdvancedSearch {
       const mainSearchQuery = this.getMainSearchQuery();
       const advancedSearchQuery = this.getAdvancedSearchQuery();
 
-      // Reset search fields if both queries are empty
-      if (this.isSearchEmpty(mainSearchQuery, advancedSearchQuery)) {
+      const isMainSearchEmpty = this.isSearchEmpty(mainSearchQuery);
+      const isAdvancedSearchEmpty = this.checkTagsContainerEmpty();
+
+      // Reset search fields if both main search and advanced search are empty
+      if (isMainSearchEmpty && isAdvancedSearchEmpty) {
         this.resetSearchFields();
+        this.displayFilteredRecipes(recipes);
         return;
       }
 
@@ -999,12 +999,30 @@ class AdvancedSearch {
     return selectedTags;
   }
 
-  // Check if both main and advanced search queries are empty
+  // Check if the search input is empty
   isSearchEmpty(mainQuery, advancedQuery) {
-    return (
-      mainQuery.trim() === "" &&
-      Object.values(advancedQuery).every((tags) => tags.length === 0)
-    );
+    if (!mainQuery && !advancedQuery) {
+      return true;
+    }
+
+    if (mainQuery) {
+      const mainQueryWords = mainQuery.split(" ");
+      const nonEmptyMainQueryWords = mainQueryWords.filter(
+        (word) => word.trim() !== ""
+      );
+      if (nonEmptyMainQueryWords.length === 0) {
+        return true;
+      }
+    }
+
+    if (advancedQuery) {
+      const tagKeys = Object.keys(advancedQuery);
+      if (tagKeys.length === 0) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   // Reset search fields and return to the initial state
