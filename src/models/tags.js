@@ -68,8 +68,6 @@ class AdvancedSearch {
       this.triggerSearchResultsUpdate();
     });
 
-    this.setupInputListeners();
-
     const clearButton = document.querySelector(".iconClear");
     clearButton.addEventListener("click", () => {
       this.clearSearchBar();
@@ -84,13 +82,13 @@ class AdvancedSearch {
   }
 
   triggerSearchResultsUpdate() {
+    console.log("triggerSearchResultsUpdate");
     this.updateNeeded = true;
     this.updateSearchResults();
   }
 
   addCloseButtonListeners() {
     const closeButtons = document.querySelectorAll(".closeButton");
-
     closeButtons.forEach((closeButton) => {
       closeButton.addEventListener("click", (event) => {
         const category = closeButton.getAttribute("data-category");
@@ -115,27 +113,13 @@ class AdvancedSearch {
     }
   }
 
-  setupInputListeners() {
-    // for (const input of searchInputs) {
-    //   input.addEventListener("input", () => {
-    //     const category = input
-    //       .closest(".dropdownHeader")
-    //       .getAttribute("data-category");
-    //     if (category) {
-    //       this.updateLocalDropdownOptions(category);
-    //     } else {
-    //       console.error("Category not found for input element.");
-    //     }
-    //   });
-    // }
-  }
-
   //############################ on updating dropdowns based on the input in the main search ################################
   // Create a new tag element
   createTagElement(tagText, category) {
     const newTag = document.createElement("li");
     newTag.textContent = tagText;
     newTag.setAttribute("data-category", category);
+    newTag.setAttribute("data-tag", tagText);
     return newTag;
   }
 
@@ -153,11 +137,144 @@ class AdvancedSearch {
         li.textContent = option;
         li.dataset.category = category;
         li.dataset.tag = option;
+
+        // Create a close button for each option
+        const closeButtonOfEachOption = document.createElement("span");
+
+        closeButtonOfEachOption.classList.add("closeButtonOfEachOption");
+        closeButtonOfEachOption.innerHTML = '<i class="fas fa-times"></i>';
+
+        // Add an event listener to handle option unselection and tag removal
+        closeButtonOfEachOption.addEventListener("click", () => {
+          this.handleCloseButtonOfOptionClick(li, category);
+        });
+
+        li.appendChild(closeButtonOfEachOption);
         dropdownContent.appendChild(li);
       });
     } else {
       console.error(`Dropdown content not found for category: ${category}`);
     }
+  }
+
+  // Handle tag click
+  handleTagClick(event, category) {
+    const clickedTag = event.target.closest("li");
+    if (clickedTag) {
+      const tagText = clickedTag.textContent.toLowerCase();
+      const isCurrentlySelected = clickedTag.classList.contains("selected");
+
+      if (!isCurrentlySelected) {
+        this.handleTagSelection(category, tagText);
+        clickedTag.classList.add("selected");
+      }
+
+      console.log("handleTagClick");
+      this.updateSearchResults();
+    }
+  }
+
+  // Handle close button next to each option click
+  handleCloseButtonOfOptionClick(option, category) {
+    console.log("Option:", option);
+    console.log("Category:", category);
+
+    const tagText = option.dataset.tag;
+    console.log("Tag Text:", tagText);
+
+    console.log("Option Before:", option);
+
+    // Find the parent dropdownHeader element
+    const dropdownHeader = option.closest(".dropdownHeader");
+    console.log("Dropdown Header:", dropdownHeader);
+
+    if (!dropdownHeader) {
+      console.error(`Dropdown header not found for category: ${category}`);
+      return;
+    }
+
+    // Check if the option is selected
+    const isSelected = option.classList.contains("selected");
+
+    // Get the list of selected options before the removal
+    const selectedOptionsBefore = this.getSelectedOptions(category);
+
+    // Unselect the option without deleting it
+    option.classList.remove("selected");
+
+    // Remove the related tag from #tagsContainer if it was selected
+    if (isSelected) {
+      this.onRemoveTag(category, tagText);
+    }
+
+    console.log("Close button clicked. Updating search results...");
+
+    // Remove and re-add the closeButtonOfEachOption
+    const closeButtonOfEachOption = option.querySelector(
+      ".closeButtonOfEachOption"
+    );
+    if (closeButtonOfEachOption) {
+      closeButtonOfEachOption.remove();
+    }
+
+    if (isSelected) {
+      const newCloseButtonOfEachOption = document.createElement("span");
+      newCloseButtonOfEachOption.classList.add("closeButtonOfEachOption");
+      newCloseButtonOfEachOption.innerHTML = '<i class="fas fa-times"></i>';
+      option.appendChild(newCloseButtonOfEachOption);
+    }
+
+    // Get the list of selected options after the removal
+    const selectedOptionsAfter = this.getSelectedOptions(category);
+
+    // Update the search results only if the selected options have changed
+    if (!this.arraysEqual(selectedOptionsBefore, selectedOptionsAfter)) {
+      this.updateSearchResults();
+    }
+
+    // Find the input field within the dropdownHeader
+    const inputField = dropdownHeader.querySelector(
+      ".dropdownHeaderInput input"
+    );
+
+    if (inputField) {
+      inputField.value = "";
+      inputField.nextElementSibling.style.display = "none";
+      this.resetDropdown(category);
+      this.checkTagsContainerEmpty();
+    }
+  }
+
+  // Helper function to get selected options in a category
+  getSelectedOptions(category) {
+    const dropdown = document.querySelector(
+      `.dropdownHeader[data-category="${category}"]`
+    );
+    if (!dropdown) {
+      console.error(`Dropdown header not found for category: ${category}`);
+      return [];
+    }
+
+    const dropdownContent = dropdown.querySelector(".dropdownContent");
+    if (!dropdownContent) {
+      console.error(`Dropdown content not found for category: ${category}`);
+      return [];
+    }
+
+    return Array.from(dropdownContent.querySelectorAll(".selected"));
+  }
+
+  // Helper function to compare two arrays for equality
+  arraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false;
+
+    for (let i = 0; i < arr1.length; i++) {
+      const tagText1 = arr1[i].dataset.tag;
+      if (!arr2.some((option) => option.dataset.tag === tagText1)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   // method to filter dropdown options based on input value
@@ -362,15 +479,14 @@ class AdvancedSearch {
   }
 
   // Initialize search input field in a dropdown in the advanced search
-  // TODO: 
+  // TODO:
   initSearchFields() {
     const searchInputs = document.querySelectorAll(".dropdownHeaderInput");
 
     // Initialize the debounced function
     const debouncedUpdateSearchResults = this.debounce(() => {
       this.updateSearchResults(); // Call the updateSearchResults directly
-    }, 300); // Adjust the debounce delay time as needed
-
+    }, 300);
     searchInputs.forEach((input) => {
       const category = input.parentElement.getAttribute("data-category"); // Get the category from the parent element
       input.addEventListener("input", () => {
@@ -497,6 +613,16 @@ class AdvancedSearch {
     this.checkTagsContainerEmpty();
   }
 
+  // Remove a selected tag
+  removeSelectedTag(category, tag) {
+    if (this.selectedTags[category]) {
+      const index = this.selectedTags[category].indexOf(tag);
+      if (index !== -1) {
+        this.selectedTags[category].splice(index, 1);
+      }
+    }
+  }
+
   // Check if the tags container is empty
   checkTagsContainerEmpty() {
     const tagsContainer = document.getElementById("tagsContainer");
@@ -523,16 +649,6 @@ class AdvancedSearch {
     }
   }
 
-  // Remove a selected tag
-  removeSelectedTag(category, tag) {
-    if (this.selectedTags[category]) {
-      const index = this.selectedTags[category].indexOf(tag);
-      if (index !== -1) {
-        this.selectedTags[category].splice(index, 1);
-      }
-    }
-  }
-
   //######################################################## on TAGs ############################################################
   // Initialize event listeners for tag selection and display in dropdownContent
   initTagSelectionListeners() {
@@ -555,22 +671,6 @@ class AdvancedSearch {
     dropdownContent.addEventListener("click", (event) => {
       this.handleTagClick(event, category);
     });
-  }
-
-  // Handle tag click
-  handleTagClick(event, category) {
-    const clickedTag = event.target.closest("li");
-    if (clickedTag) {
-      const tagText = clickedTag.textContent.toLowerCase();
-      if (this.isTagSelected(category, tagText)) {
-        this.onRemoveTag(category, tagText);
-        clickedTag.classList.remove("selected");
-      } else {
-        this.handleTagSelection(category, tagText);
-        clickedTag.classList.add("selected");
-      }
-      this.debounceUpdateSearchResults();
-    }
   }
 
   // Setup event listeners for the tags container
@@ -605,7 +705,7 @@ class AdvancedSearch {
         tagElement.setAttribute("data-tag", tag);
         tagElement.textContent = tag;
 
-        // TODO: Add "Remove Tag" button
+        // Add "Remove Tag" button
         const closeButton = document.createElement("span");
         closeButton.classList.add("closeButton");
         closeButton.innerHTML = '<i class="fas fa-times"></i>';
@@ -667,8 +767,6 @@ class AdvancedSearch {
           this.updateSearchResults();
         });
 
-        console.log("TEST");
-
         // Highlight selected tags
         if (this.isTagSelected(category, tag)) {
           tagElement.classList.add("selected");
@@ -694,47 +792,18 @@ class AdvancedSearch {
       });
     }
 
-    // Set up an event listener on the tagsContainer to handle tag removal and unselection in the dropdown
-    tagsContainer.addEventListener("click", (event) => {
-      ///
-      const clickedTagElement = event.target.closest(".selectedTag");
-      if (clickedTagElement) {
-        const category = clickedTagElement.getAttribute("data-category");
-        const tag = clickedTagElement.dataset.tag;
-
-        // Debugging: Output category, tag
-        console.log("=>>>>>>>>>> category", category);
-        console.log("=>>>>>>>>>> tag", tag);
-    
-
-        // Remove the tag from the selected tags
-        this.onRemoveTag(category, tag);
-        this.closeAllDropdowns(category);
-        this.updateTagDisplay();
-        this.updateSearchResults();
-
-        // Unselect the corresponding li in the dropdown
-        const dropdownContent = document.querySelector(
-          `.dropdownHeader[data-category="${category}"] .dropdownContent`
-        );
-        if (dropdownContent) {
-          const dropdownOption = dropdownContent.querySelector(
-            `li[data-category="${category}"][data-tag="${tag}"]`
-          );
-          if (dropdownOption) {
-            dropdownOption.classList.remove("selected");
-          }
-        }
-      }
-    });
-
     this.updateSearchResults();
   }
 
   // Handle click on .closeButton on the tags in the #tagsContainer
   handleTagContainerClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
     const closeButton = event.target.closest(".closeButton");
     if (closeButton) {
+      console.log("handleTagContainerClick");
+
       const tagContainer = closeButton.parentElement;
       const category = tagContainer.getAttribute("data-category");
       const tag = tagContainer.getAttribute("data-tag");
@@ -836,6 +905,7 @@ class AdvancedSearch {
 
   // onRemoveTag method
   onRemoveTag(category, tag) {
+    console.log("Removing tag:", tag);
     if (
       this.selectedTags[category] &&
       Array.isArray(this.selectedTags[category])
@@ -847,6 +917,8 @@ class AdvancedSearch {
       if (tagIndex !== -1) {
         this.selectedTags[category].splice(tagIndex, 1);
       }
+
+      console.log("Selected tags after removal:", this.selectedTags);
 
       selectedElements.forEach((selectedElement) => {
         selectedElement.classList.remove("selected");
@@ -1058,4 +1130,3 @@ class AdvancedSearch {
   }
 }
 export default AdvancedSearch;
-
