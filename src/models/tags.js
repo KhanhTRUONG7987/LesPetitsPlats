@@ -368,13 +368,6 @@ class AdvancedSearch {
     return Array.from(tags);
   }
 
-  // Filter tags by category
-  filterTagsByCategory(tags, category) {
-    return Array.from(tags).filter(
-      (tag) => tag.getAttribute("data-category") === category
-    );
-  }
-
   updateAdvancedSearchFields() {
     // Combine the main search query and selected tags
     const mainSearchQuery = searchBar.value.trim().toLowerCase();
@@ -462,19 +455,6 @@ class AdvancedSearch {
   }
   //############################################# on inputting in ADVANCED SEARCH ######################################################
 
-  // Check if the advanced search is empty
-  isAdvancedSearchEmpty() {
-    for (const key in this.selectedTags) {
-      if (
-        Array.isArray(this.selectedTags[key]) &&
-        this.selectedTags[key].length > 0
-      ) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   // Initialize search input field in a dropdown in the advanced search
   initSearchFields() {
     const searchInputs = document.querySelectorAll(".dropdownHeaderInput");
@@ -532,53 +512,22 @@ class AdvancedSearch {
 
     filteredOptions.forEach((option) => {
       const newTag = this.createTagElement(option, category);
+      // Create a close button for each option
+      const closeButtonOfEachOption = document.createElement("span");
+      closeButtonOfEachOption.classList.add("closeButtonOfEachOption");
+      closeButtonOfEachOption.innerHTML = '<i class="fas fa-times"></i>';
+
+      // Add an event listener to handle option unselection and tag removal
+      closeButtonOfEachOption.addEventListener("click", () => {
+        this.handleCloseButtonOfOptionClick(newTag, category);
+      });
+
+      newTag.appendChild(closeButtonOfEachOption);
+
       dropdownContent.appendChild(newTag);
     });
 
     this.toggleCloseButtonVisibility(inputField, inputValue);
-  }
-
-  // Update dropdown options based on the input within each dropdown
-  updateLocalDropdownOptions(category) {
-    console.log("Selected category:", category);
-    //const dropdownContent = document.querySelector(`.${category}-dropdown`);
-    const dropdownContent = document.querySelector(
-      `.dropdownContent[data-category="${category}"]`
-    );
-    const searchContent = document.querySelector(`.${category}SearchInput`);
-
-    const options = dropdownContent.querySelectorAll("li");
-
-    if (dropdownContent) {
-      const allOptions = this.collectTagsFromRecipes(category);
-      const inputField = this.getDropdownInputField(dropdownContent);
-      const inputValue = inputField.value.trim().toLowerCase();
-      const mainSearchQuery = searchBar.value.trim().toLowerCase();
-
-      if (inputValue === "") {
-        // If the input in the dropdown is empty, check the main search input
-        if (mainSearchQuery === "") {
-          // Both inputs are empty, show all available options
-          this.resetDropdown(category);
-        } else {
-          // Main search input has a value, filter dropdown based on it
-          this.resetDropdownToFilteredOptions(
-            dropdownContent,
-            allOptions,
-            mainSearchQuery,
-            category
-          );
-        }
-      } else {
-        // Input field in the dropdown is not empty, filter dropdown based on it
-        this.updateDropdownOptions(category, options);
-      }
-
-      // Update the last input value
-      inputField.dataset.lastValue = inputValue;
-    } else {
-      console.error(`Dropdown content not found for category: ${category}`);
-    }
   }
 
   //####################################### events in .searchInput field (advanced search) ########################################
