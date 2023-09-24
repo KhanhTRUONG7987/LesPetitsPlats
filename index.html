@@ -54,7 +54,7 @@
               placeholder="Rechercher une recette, un ingrédient, ..."
             />
             <p class="searchContent"></p>
-            <span class="iconClear">X</span>
+            <span class="iconClear"><i class="fas fa-times"></i></span>
             <span class="iconLoop">
               <i class="fas fa-search iconMagnifyingGlass"></i>
             </span>
@@ -74,14 +74,14 @@
               Ingrédients<i class="fas fa-angle-down"></i>
               <div class="dropdownHeaderInput">
                 <input type="text" class="ingredientSearchInput searchInput" />
-                <span class="closeButton">x</span>
+                <span class="closeButton" data-category="ingredients"><i class="fas fa-times"></i></span>
                 <p class="searchContentDropdown"></p>
                 <span class="iconLoopDropdown">
                   <i class="fas fa-search iconMagnifyingGlass"></i>
                 </span>
               </div>
               <ul class="dropdownContent ingredients-dropdown">
-                <!-- Dynamic tags -->
+                <!-- Dynamic tag -->
               </ul>
             </div>
           </div>
@@ -92,7 +92,7 @@
               Appareils<i class="fas fa-angle-down"></i>
               <div class="dropdownHeaderInput">
                 <input type="text" class="applianceSearchInput searchInput" />
-                <span class="closeButton">x</span>
+                <span class="closeButton" data-category="appliance"><i class="fas fa-times"></i></span>
                 <p class="searchContentDropdown"></p>
                 <span class="iconLoopDropdown">
                   <i class="fas fa-search iconMagnifyingGlass"></i>
@@ -110,7 +110,7 @@
               Ustensiles<i class="fas fa-angle-down"></i>
               <div class="dropdownHeaderInput">
                 <input type="text" class="ustensilsSearchInput searchInput" />
-                <span class="closeButton">x</span>
+                <span class="closeButton" data-category="ustensils"><i class="fas fa-times"></i></span>
                 <p class="searchContentDropdown"></p>
                 <span class="iconLoopDropdown">
                   <i class="fas fa-search iconMagnifyingGlass"></i>
@@ -142,7 +142,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <!-- Load modules after the libraries -->
     <script type="module" src="src/models/cards.js"></script>
-    <script type="module" src="src/utils/performMainSearch.js"></script>
+    <script type="module" src="src/utils/trieSearch.js"></script>
     <script type="module" src="src/models/tags.js"></script>
     <!-- Load main script last -->
     <script type="module" src="src/index.js"></script>

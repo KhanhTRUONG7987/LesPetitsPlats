@@ -1,7 +1,7 @@
 import AdvancedSearch from "./tags.js";
-import { performSearch } from "../utils/performMainSearch.js";
 import Cards from "./cards.js";
 import { updateListedRecipesCount } from "../utils/countListedCards.js";
+import { performTrieBasedSearch } from "../utils/trieSearch.js";
 
 class Recipes {
   constructor() {
@@ -49,7 +49,9 @@ class Recipes {
 
   // Handle changes in the search input
   handleSearchInputChange(searchQuery) {
-    const matchingRecipes = performSearch(searchQuery);
+    // Replace this with your trie-based search function
+    const matchingRecipes = performTrieBasedSearch(searchQuery);
+    
     const recipeCardContainer = document.getElementById("recipeCardContainer");
     updateListedRecipesCount(recipeCardContainer, matchingRecipes);
   }

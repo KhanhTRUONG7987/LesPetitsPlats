@@ -3,7 +3,7 @@ import Cards from "../models/cards.js";
 import { updateListedRecipesCount } from "./countListedCards.js";
 
 // Function to perform search and update interface
-export function performSearch(searchQuery, recipeCardContainer) {
+export function performMainSearch(searchQuery, recipeCardContainer) {
   // Clear previous search results
   clearSearchResults();
 

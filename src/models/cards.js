@@ -134,6 +134,12 @@ class Cards {
     });
   }
 
+  // Implement the displayAllRecipes method
+  displayAllRecipes() {
+    const recipeIds = this.recipes.map((recipe) => recipe.id);
+    this.displayRecipes(recipeIds);
+  }
+
   // updateCards method
   updateCards(recipeList) {
     const recipeCardContainer = document.getElementById("recipeCardContainer");
